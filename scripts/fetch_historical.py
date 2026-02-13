@@ -14,6 +14,7 @@ from typing import List, Dict
 
 import yfinance as yf
 import pandas as pd
+import time
 
 from aim.data_layer.database import Database
 
@@ -28,52 +29,63 @@ def fetch_historical_data(
     ticker: str,
     period: str = "10y",
     interval: str = "1d",
+    max_retries: int = 3,
 ) -> pd.DataFrame:
     """
-    Busca dados históricos via yfinance.
+    Busca dados históricos via yfinance com retry.
     
     Args:
-        ticker: Código do ativo (ex: PETR4.SA)
+        ticker: Código do ativo (ex: PETR4)
         period: Período (1y, 5y, 10y, max)
         interval: Intervalo (1d, 1wk, 1mo)
+        max_retries: Número de tentativas
     
     Returns:
         DataFrame com OHLCV
     """
-    try:
-        # yfinance usa sufixo .SA para ações brasileiras
-        yf_ticker = f"{ticker}.SA" if not ticker.endswith('.SA') and not ticker.startswith('^') else ticker
+    # Tentar com e sem .SA
+    suffixes = [".SA", ""]
+    
+    for suffix in suffixes:
+        yf_ticker = f"{ticker}{suffix}"
         
-        stock = yf.Ticker(yf_ticker)
-        df = stock.history(period=period, interval=interval)
-        
-        if df.empty:
-            logger.warning(f"Sem dados para {ticker}")
-            return pd.DataFrame()
-        
-        # Resetar índice para ter date como coluna
-        df = df.reset_index()
-        
-        # Renomear colunas para padronização
-        df = df.rename(columns={
-            'Date': 'date',
-            'Open': 'open',
-            'High': 'high',
-            'Low': 'low',
-            'Close': 'close',
-            'Volume': 'volume',
-        })
-        
-        # Adicionar ticker
-        df['ticker'] = ticker
-        df['adjusted_close'] = df['close']
-        df['source'] = 'yfinance'
-        
-        return df[['ticker', 'date', 'open', 'high', 'low', 'close', 'volume', 'adjusted_close', 'source']]
-        
-    except Exception as e:
-        logger.error(f"Erro ao buscar {ticker}: {e}")
-        return pd.DataFrame()
+        for attempt in range(max_retries):
+            try:
+                # Delay para não sobrecarregar API
+                time.sleep(0.5)
+                
+                stock = yf.Ticker(yf_ticker)
+                df = stock.history(period=period, interval=interval)
+                
+                if not df.empty:
+                    # Resetar índice para ter date como coluna
+                    df = df.reset_index()
+                    
+                    # Renomear colunas
+                    df = df.rename(columns={
+                        'Date': 'date',
+                        'Open': 'open',
+                        'High': 'high',
+                        'Low': 'low',
+                        'Close': 'close',
+                        'Volume': 'volume',
+                    })
+                    
+                    # Adicionar ticker original (sem sufixo)
+                    df['ticker'] = ticker
+                    df['adjusted_close'] = df['close']
+                    df['source'] = 'yfinance'
+                    
+                    return df[['ticker', 'date', 'open', 'high', 'low', 'close', 'volume', 'adjusted_close', 'source']]
+                
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    time.sleep(1)  # Esperar antes de retry
+                else:
+                    logger.debug(f"Erro em {yf_ticker}: {e}")
+    
+    logger.warning(f"Sem dados para {ticker} após {max_retries} tentativas")
+    return pd.DataFrame()
 
 
 def insert_historical_prices(db: Database, df: pd.DataFrame) -> int:

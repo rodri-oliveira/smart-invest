@@ -55,7 +55,6 @@ class WalkForwardBacktest:
         query = """
             SELECT DISTINCT date 
             FROM prices 
-            WHERE source = 'yfinance'
             ORDER BY date ASC
         """
         results = self.db.fetch_all(query)
@@ -225,7 +224,6 @@ def main():
     check = db.fetch_one("""
         SELECT COUNT(DISTINCT date) as n_dates, MIN(date) as start, MAX(date) as end
         FROM prices
-        WHERE source = 'yfinance'
     """)
     
     if not check or check["n_dates"] < 500:
