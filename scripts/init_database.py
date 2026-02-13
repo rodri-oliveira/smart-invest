@@ -279,71 +279,93 @@ CREATE INDEX IF NOT EXISTS idx_holdings_portfolio_date ON portfolio_holdings(por
 
 # Dados iniciais: Top ativos B3
 DEFAULT_ASSETS = [
-    ("PETR4", "Petrobras PN", "Petróleo", "Exploração", "LARGE", False),
-    ("PETR3", "Petrobras ON", "Petróleo", "Exploração", "LARGE", False),
-    ("VALE3", "Vale ON", "Mineração", "Ferrosos", "LARGE", False),
-    ("ITUB4", "Itaú Unibanco PN", "Financeiro", "Bancos", "LARGE", False),
-    ("BBDC4", "Bradesco PN", "Financeiro", "Bancos", "LARGE", False),
-    ("BBAS3", "Banco do Brasil ON", "Financeiro", "Bancos", "LARGE", False),
-    ("MGLU3", "Magazine Luiza ON", "Varejo", "Eletrodomésticos", "LARGE", False),
-    ("WEGE3", "WEG ON", "Indústria", "Máquinas", "LARGE", False),
-    ("LREN3", "Lojas Renner ON", "Varejo", "Vestuário", "LARGE", False),
-    ("ABEV3", "Ambev ON", "Bebidas", "Cervejas", "LARGE", False),
-    ("JBSS3", "JBS ON", "Alimentos", "Carnes", "LARGE", False),
-    ("ELET3", "Eletrobras ON", "Energia", "Elétricas", "LARGE", False),
-    ("ELET6", "Eletrobras PNB", "Energia", "Elétricas", "LARGE", False),
-    ("RENT3", "Localiza ON", "Locação", "Veículos", "LARGE", False),
-    ("B3SA3", "B3 ON", "Financeiro", "Bolsas", "LARGE", False),
-    ("SUZB3", "Suzano ON", "Papel", "Celulose", "LARGE", False),
-    ("RAIL3", "Rumo ON", "Logística", "Ferrovias", "LARGE", False),
-    ("VBBR3", "Vibra Energia ON", "Combustíveis", "Distribuição", "LARGE", False),
-    ("PRIO3", "PetroRio ON", "Petróleo", "Exploração", "LARGE", False),
-    ("BBSE3", "BB Seguridade ON", "Financeiro", "Seguros", "LARGE", False),
-    ("ITSA4", "Itaúsa PN", "Holdings", "Financeiras", "LARGE", False),
-    ("GGBR4", "Gerdau PN", "Siderurgia", "Aços", "LARGE", False),
-    ("CSNA3", "CSN ON", "Siderurgia", "Aços", "LARGE", False),
-    ("USIM5", "Usiminas PNA", "Siderurgia", "Aços", "MID", False),
-    ("SANB11", "Santander BR Unit", "Financeiro", "Bancos", "LARGE", False),
-    ("BPAC11", "BTG Pactual Unit", "Financeiro", "Bancos", "LARGE", False),
-    ("EGIE3", "Engie Brasil ON", "Energia", "Elétricas", "LARGE", False),
-    ("CPFE3", "CPFL Energia ON", "Energia", "Elétricas", "LARGE", False),
-    ("ENGI11", "Energisa Unit", "Energia", "Elétricas", "LARGE", False),
-    ("RAIZ4", "Raízen PN", "Combustíveis", "Etanol", "LARGE", False),
-    ("BRFS3", "BRF ON", "Alimentos", "Processados", "LARGE", False),
-    ("CCRO3", "CCR ON", "Logística", "Rodovias", "LARGE", False),
-    ("RDOR3", "Rede D'Or ON", "Saúde", "Hospitais", "LARGE", False),
-    ("HAPV3", "Hapvida ON", "Saúde", "Hospitais", "LARGE", False),
-    ("EQTL3", "Equatorial ON", "Energia", "Elétricas", "LARGE", False),
-    ("TOTS3", "Totvs ON", "Tecnologia", "Software", "LARGE", False),
-    ("FLRY3", "Fleury ON", "Saúde", "Laboratórios", "LARGE", False),
-    ("KLBN11", "Klabin Unit", "Papel", "Embalagens", "LARGE", False),
-    ("SBSP3", "Sabesp ON", "Saneamento", "Água", "LARGE", False),
-    ("CMIG4", "Cemig PN", "Energia", "Elétricas", "LARGE", False),
-    ("IBOVESPA", "Índice Ibovespa", "Índice", "Benchmark", "LARGE", True),
+    ("PETR4", "Petrobras PN", "Petróleo", "Exploração", "LARGE", False, True),
+    ("PETR3", "Petrobras ON", "Petróleo", "Exploração", "LARGE", False, True),
+    ("VALE3", "Vale ON", "Mineração", "Ferrosos", "LARGE", False, True),
+    ("ITUB4", "Itaú Unibanco PN", "Financeiro", "Bancos", "LARGE", False, True),
+    ("BBDC4", "Bradesco PN", "Financeiro", "Bancos", "LARGE", False, True),
+    ("BBAS3", "Banco do Brasil ON", "Financeiro", "Bancos", "LARGE", False, True),
+    ("MGLU3", "Magazine Luiza ON", "Varejo", "Eletrodomésticos", "LARGE", False, True),
+    ("WEGE3", "WEG ON", "Indústria", "Máquinas", "LARGE", False, True),
+    ("LREN3", "Lojas Renner ON", "Varejo", "Vestuário", "LARGE", False, True),
+    ("ABEV3", "Ambev ON", "Bebidas", "Cervejas", "LARGE", False, True),
+    ("JBSS3", "JBS ON", "Alimentos", "Carnes", "LARGE", False, True),
+    ("ELET3", "Eletrobras ON", "Energia", "Elétricas", "LARGE", False, True),
+    ("ELET6", "Eletrobras PNB", "Energia", "Elétricas", "LARGE", False, True),
+    ("RENT3", "Localiza ON", "Locação", "Veículos", "LARGE", False, True),
+    ("B3SA3", "B3 ON", "Financeiro", "Bolsas", "LARGE", False, True),
+    ("SUZB3", "Suzano ON", "Papel", "Celulose", "LARGE", False, True),
+    ("RAIL3", "Rumo ON", "Logística", "Ferrovias", "LARGE", False, True),
+    ("VBBR3", "Vibra Energia ON", "Combustíveis", "Distribuição", "LARGE", False, True),
+    ("PRIO3", "PetroRio ON", "Petróleo", "Exploração", "LARGE", False, True),
+    ("BBSE3", "BB Seguridade ON", "Financeiro", "Seguros", "LARGE", False, True),
+    ("ITSA4", "Itaúsa PN", "Holdings", "Financeiras", "LARGE", False, True),
+    ("GGBR4", "Gerdau PN", "Siderurgia", "Aços", "LARGE", False, True),
+    ("CSNA3", "CSN ON", "Siderurgia", "Aços", "LARGE", False, True),
+    ("USIM5", "Usiminas PNA", "Siderurgia", "Aços", "MID", False, True),
+    ("SANB11", "Santander BR Unit", "Financeiro", "Bancos", "LARGE", False, True),
+    ("BPAC11", "BTG Pactual Unit", "Financeiro", "Bancos", "LARGE", False, True),
+    ("EGIE3", "Engie Brasil ON", "Energia", "Elétricas", "LARGE", False, True),
+    ("CPFE3", "CPFL Energia ON", "Energia", "Elétricas", "LARGE", False, True),
+    ("ENGI11", "Energisa Unit", "Energia", "Elétricas", "LARGE", False, True),
+    ("RAIZ4", "Raízen PN", "Combustíveis", "Etanol", "LARGE", False, True),
+    ("BRFS3", "BRF ON", "Alimentos", "Processados", "LARGE", False, True),
+    ("CCRO3", "CCR ON", "Logística", "Rodovias", "LARGE", False, True),
+    ("RDOR3", "Rede D'Or ON", "Saúde", "Hospitais", "LARGE", False, True),
+    ("HAPV3", "Hapvida ON", "Saúde", "Hospitais", "LARGE", False, True),
+    ("EQTL3", "Equatorial ON", "Energia", "Elétricas", "LARGE", False, True),
+    ("TOTS3", "Totvs ON", "Tecnologia", "Software", "LARGE", False, True),
+    ("FLRY3", "Fleury ON", "Saúde", "Laboratórios", "LARGE", False, True),
+    ("KLBN11", "Klabin Unit", "Papel", "Embalagens", "LARGE", False, True),
+    ("SBSP3", "Sabesp ON", "Saneamento", "Água", "LARGE", False, True),
+    ("CMIG4", "Cemig PN", "Energia", "Elétricas", "LARGE", False, True),
+    ("IBOVESPA", "Índice Ibovespa", "Índice", "Benchmark", "LARGE", True, True),
 ]
 
 
 def create_tables() -> None:
-    """Cria todas as tabelas do banco."""
+    """Cria todas as tabelas do banco (um statement por vez para SQLite)."""
     db = Database()
-
+    
     logger.info("Criando tabelas...")
-
-    # Executar script de criação
-    db.execute(CREATE_TABLES_SQL)
-
+    
+    # Dividir SQL em statements individuais (separados por ;)
+    statements = [s.strip() for s in CREATE_TABLES_SQL.split(';') if s.strip()]
+    
+    for i, sql in enumerate(statements, 1):
+        try:
+            # Remover comentários do SQL
+            clean_sql = '\n'.join(line for line in sql.split('\n') if not line.strip().startswith('--'))
+            if clean_sql.strip():
+                db.execute(clean_sql)
+                logger.info(f"  ✓ Tabela {i}/{len(statements)}")
+        except Exception as e:
+            logger.error(f"  ✗ Erro no statement {i}: {e}")
+            logger.error(f"     SQL: {sql[:100]}...")
+            raise
+    
     logger.info("✓ Tabelas criadas")
 
 
 def create_indexes() -> None:
-    """Cria índices para performance."""
+    """Cria índices para performance (um por vez)."""
     db = Database()
 
     logger.info("Criando índices...")
+    
+    # Dividir em statements individuais
+    statements = [s.strip() for s in CREATE_INDEXES_SQL.split(';') if s.strip()]
 
-    db.execute(CREATE_INDEXES_SQL)
-
-    logger.info("✓ Índices criados")
+    for i, sql in enumerate(statements, 1):
+        try:
+            clean_sql = '\n'.join(line for line in sql.split('\n') if not line.strip().startswith('--'))
+            if clean_sql.strip():
+                db.execute(clean_sql)
+        except Exception as e:
+            logger.warning(f"  ⚠ Erro no índice {i}: {e}")
+            # Índices são opcionais, continuar mesmo se falhar
+    
+    logger.info(f"✓ {len(statements)} índices processados")
 
 
 def seed_initial_data() -> None:

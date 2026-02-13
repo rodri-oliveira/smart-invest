@@ -6,6 +6,13 @@ Coleta dados de mercado, calcula features, atualiza sinais.
 
 import logging
 import sys
+
+# Fix UTF-8 encoding on Windows
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
+
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple
@@ -308,13 +315,13 @@ def validate_data_quality(db: Database) -> bool:
 
     checks = []
 
-    # 1. Verificar se há preços do dia
+    # 1. Verificar preços recentes
     today = datetime.now().strftime("%Y-%m-%d")
     recent = db.fetch_one(
         "SELECT MAX(date) as max_date FROM prices",
     )
 
-    if recent and recent["max_date"]:
+    if recent and recent["max_date"] and isinstance(recent["max_date"], str):
         days_diff = (datetime.now() - datetime.strptime(recent["max_date"], "%Y-%m-%d")).days
         if days_diff > 2:
             logger.warning(f"  ⚠ Dados desatualizados: última data é {recent['max_date']}")
@@ -322,6 +329,9 @@ def validate_data_quality(db: Database) -> bool:
         else:
             logger.info(f"  ✓ Dados atualizados até {recent['max_date']}")
             checks.append(True)
+    else:
+        logger.warning("  ⚠ Sem dados de preços disponíveis")
+        checks.append(False)
 
     # 2. Verificar cobertura mínima
     count = db.fetch_one("SELECT COUNT(DISTINCT ticker) as count FROM prices")
@@ -335,41 +345,81 @@ def validate_data_quality(db: Database) -> bool:
     return all(checks)
 
 
+def check_local_data(db: Database) -> bool:
+    """Verifica se há dados locais suficientes."""
+    logger.info("Verificando dados locais...")
+
+    # Verificar se há dados de preços
+    prices = db.fetch_one("SELECT COUNT(*) as count FROM prices")
+    if prices and prices["count"] > 0:
+        logger.info(f"  ✓ {prices['count']} registros de preços")
+        return True
+    else:
+        logger.warning("  ⚠ Sem dados de preços locais")
+        return False
+
+
 def main() -> int:
     """Função principal do pipeline diário."""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Pipeline diário de atualização")
+    parser.add_argument("--offline", action="store_true", help="Usar apenas dados locais (não chamar APIs externas)")
+    args = parser.parse_args()
+    
     try:
         logger.info("=" * 60)
         logger.info(f"Daily Update - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        if args.offline:
+            logger.info("MODO OFFLINE - Usando apenas dados locais")
         logger.info("=" * 60)
 
-        # Verificar diretório de logs
         Path("logs").mkdir(exist_ok=True)
 
-        # Inicializar conexões
         db = Database()
-        brapi = BrapiProvider()
-        bcb = BCBProvider()
+        
+        # Verificar se há dados locais suficientes
+        has_local_data = check_local_data(db)
+        
+        if args.offline and not has_local_data:
+            logger.error("✗ MODO OFFLINE: Não há dados locais. Rode: python scripts/seed_demo.py")
+            return 1
 
         stats = {}
 
-        # 1. Atualizar dados de mercado
-        logger.info("\n[1/6] Atualizando dados de mercado...")
-        market_stats = update_market_data(db, brapi)
-        stats.update(market_stats)
-
-        # 2. Atualizar fundamentos (segunda-feira)
-        if datetime.now().weekday() == 0:
-            logger.info("\n[2/6] Atualizando dados fundamentalistas...")
-            fund_stats = update_fundamentals(db, brapi)
-            stats.update(fund_stats)
+        # 1. Atualizar dados de mercado (se não estiver em modo offline)
+        if not args.offline:
+            logger.info("\n[1/6] Atualizando dados de mercado...")
+            brapi = BrapiProvider()
+            market_stats = update_market_data(db, brapi)
+            stats.update(market_stats)
+            brapi.close()
         else:
-            logger.info("\n[2/6] Pulando fundamentos (atualização semanal)")
+            logger.info("\n[1/6] Pulando atualização de mercado (modo offline)")
+            stats["prices_updated"] = 0
+            stats["errors"] = 0
+
+        # 2. Atualizar fundamentos (segunda-feira, apenas se não offline)
+        if not args.offline and datetime.now().weekday() == 0:
+            logger.info("\n[2/6] Atualizando dados fundamentalistas...")
+            brapi_fund = BrapiProvider()
+            fund_stats = update_fundamentals(db, brapi_fund)
+            stats.update(fund_stats)
+            brapi_fund.close()
+        else:
+            logger.info("\n[2/6] Pulando fundamentos (atualização semanal ou modo offline)")
             stats["fundamentals_updated"] = 0
 
-        # 3. Atualizar dados macro
-        logger.info("\n[3/6] Atualizando dados macroeconômicos...")
-        macro_stats = update_macro_data(db, bcb)
-        stats.update(macro_stats)
+        # 3. Atualizar dados macro (se não offline)
+        if not args.offline:
+            logger.info("\n[3/6] Atualizando dados macroeconômicos...")
+            bcb = BCBProvider()
+            macro_stats = update_macro_data(db, bcb)
+            stats.update(macro_stats)
+            bcb.close()
+        else:
+            logger.info("\n[3/6] Pulando dados macro (modo offline)")
+            stats["macro_inserted"] = 0
 
         # 4. Calcular features
         logger.info("\n[4/7] Calculando features...")
@@ -412,9 +462,9 @@ def main() -> int:
         logger.info("=" * 60)
         logger.info("✓ Atualização concluída!")
 
-        # Fechar conexões
-        brapi.close()
-        bcb.close()
+        # Fechar conexões (se existirem)
+        if not args.offline and 'brapi' in locals():
+            brapi.close()
 
         return 0 if is_valid else 1
 
