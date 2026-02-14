@@ -71,7 +71,11 @@ def load_fundamentals_for_scoring(
     """
     # Pegar os fundamentos mais recentes de cada ativo
     query = """
-        SELECT f.*
+        SELECT 
+            f.ticker, f.reference_date, f.report_type,
+            f.p_l, f.p_vp, f.dy, f.roe, f.roic, 
+            f.net_margin, f.gross_margin, f.ebitda,
+            f.market_cap, f.divida_patrimonio
         FROM fundamentals f
         INNER JOIN (
             SELECT ticker, MAX(reference_date) as max_date

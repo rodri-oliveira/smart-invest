@@ -241,6 +241,18 @@ CREATE TABLE IF NOT EXISTS dividends (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ticker) REFERENCES assets(ticker)
 );
+
+-- Usuários do sistema
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP
+);
 """
 
 # Índices para performance
@@ -271,6 +283,9 @@ CREATE INDEX IF NOT EXISTS idx_features_date ON features(date);
 -- Índices de dividendos
 CREATE INDEX IF NOT EXISTS idx_dividends_ticker ON dividends(ticker, payment_date DESC);
 CREATE INDEX IF NOT EXISTS idx_dividends_ex_date ON dividends(ex_date);
+
+-- Índice de usuários
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- Índices de carteiras
 CREATE INDEX IF NOT EXISTS idx_holdings_portfolio_date ON portfolio_holdings(portfolio_id, date DESC);
@@ -400,6 +415,7 @@ def validate_database() -> bool:
         "portfolio_holdings",
         "backtests",
         "dividends",
+        "users",
     ]
 
     for table in required_tables:

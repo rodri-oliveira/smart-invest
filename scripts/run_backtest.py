@@ -53,12 +53,12 @@ class WalkForwardBacktest:
     def get_available_dates(self) -> List[str]:
         """Retorna todas as datas disponíveis no banco."""
         query = """
-            SELECT DISTINCT date 
+            SELECT DISTINCT date(date) as date_str
             FROM prices 
             ORDER BY date ASC
         """
         results = self.db.fetch_all(query)
-        return [r["date"] for r in results]
+        return [r["date_str"] for r in results]
     
     def run_window(
         self,

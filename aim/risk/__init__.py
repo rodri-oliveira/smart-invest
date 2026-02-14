@@ -10,6 +10,11 @@ from aim.risk.manager import (
     check_sector_exposure,
     validate_portfolio_constraints,
 )
+from aim.risk.first import (
+    RiskAssessment,
+    RiskFirstEngine,
+    validate_portfolio_recommendation,
+)
 
 __all__ = [
     "calculate_position_size_risk_based",
@@ -20,4 +25,7 @@ __all__ = [
     "check_sector_exposure",
     "calculate_risk_metrics_portfolio",
     "validate_portfolio_constraints",
+    "RiskAssessment",
+    "RiskFirstEngine",
+    "validate_portfolio_recommendation",
 ]

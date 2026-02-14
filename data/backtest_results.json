@@ -1,0 +1,1235 @@
+{
+  "n_windows": 72,
+  "total_return": 0.4996345544920018,
+  "avg_return_per_window": 0.01890585070630641,
+  "volatility": 0.32920881380512707,
+  "sharpe_ratio": 0.05742814260585867,
+  "max_drawdown": 0.6012284006445634,
+  "calmar_ratio": 0.03144537198515219,
+  "windows": [
+    {
+      "train_start": "2007-01-01",
+      "train_end": "2008-01-09",
+      "test_start": "2008-01-10",
+      "test_end": "2008-04-13",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "BBDC4",
+        "CSNA3",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 133700.60308426118,
+      "return": 0.3370060308426117,
+      "return_pct": 33.700603084261175
+    },
+    {
+      "train_start": "2007-04-03",
+      "train_end": "2008-04-13",
+      "test_start": "2008-04-14",
+      "test_end": "2008-07-15",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "CMIG4",
+        "CPFE3",
+        "ITSA4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 85099.99722570495,
+      "return": -0.1490000277429505,
+      "return_pct": -14.900002774295052
+    },
+    {
+      "train_start": "2007-07-04",
+      "train_end": "2008-07-15",
+      "test_start": "2008-07-16",
+      "test_end": "2008-10-12",
+      "selected_assets": [
+        "CMIG4",
+        "BBDC4",
+        "PETR4",
+        "PETR3",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 70517.00255547333,
+      "return": -0.2948299744452667,
+      "return_pct": -29.48299744452667
+    },
+    {
+      "train_start": "2007-10-03",
+      "train_end": "2008-10-12",
+      "test_start": "2008-10-13",
+      "test_end": "2009-01-14",
+      "selected_assets": [
+        "CMIG4",
+        "PETR4",
+        "PETR3",
+        "CPFE3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 88347.70621272465,
+      "return": -0.11652293787275358,
+      "return_pct": -11.652293787275358
+    },
+    {
+      "train_start": "2008-01-10",
+      "train_end": "2009-01-14",
+      "test_start": "2009-01-15",
+      "test_end": "2009-04-16",
+      "selected_assets": [
+        "CMIG4",
+        "CPFE3",
+        "PETR4",
+        "PETR3",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 110645.41393790465,
+      "return": 0.10645413937904658,
+      "return_pct": 10.645413937904657
+    },
+    {
+      "train_start": "2008-04-14",
+      "train_end": "2009-04-16",
+      "test_start": "2009-04-19",
+      "test_end": "2009-07-20",
+      "selected_assets": [
+        "PETR4",
+        "TOTS3",
+        "CMIG4",
+        "PETR3",
+        "CPFE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 110918.92559415915,
+      "return": 0.10918925594159146,
+      "return_pct": 10.918925594159145
+    },
+    {
+      "train_start": "2008-07-16",
+      "train_end": "2009-07-20",
+      "test_start": "2009-07-21",
+      "test_end": "2009-10-19",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "BBDC4",
+        "TOTS3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 123116.354985545,
+      "return": 0.23116354985545007,
+      "return_pct": 23.11635498554501
+    },
+    {
+      "train_start": "2008-10-13",
+      "train_end": "2009-10-19",
+      "test_start": "2009-10-20",
+      "test_end": "2010-01-25",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "BBAS3",
+        "GGBR4",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 91748.04766189553,
+      "return": -0.08251952338104473,
+      "return_pct": -8.251952338104473
+    },
+    {
+      "train_start": "2009-01-15",
+      "train_end": "2010-01-25",
+      "test_start": "2010-01-26",
+      "test_end": "2010-04-28",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "USIM5",
+        "CMIG4",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 107594.88908807727,
+      "return": 0.07594889088077261,
+      "return_pct": 7.594889088077261
+    },
+    {
+      "train_start": "2009-04-19",
+      "train_end": "2010-04-28",
+      "test_start": "2010-04-29",
+      "test_end": "2010-07-28",
+      "selected_assets": [
+        "PETR4",
+        "USIM5",
+        "PETR3",
+        "BBDC4",
+        "LREN3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 99947.88439223476,
+      "return": -0.0005211560776524626,
+      "return_pct": -0.052115607765246263
+    },
+    {
+      "train_start": "2009-07-21",
+      "train_end": "2010-07-28",
+      "test_start": "2010-07-29",
+      "test_end": "2010-10-27",
+      "selected_assets": [
+        "LREN3",
+        "PETR4",
+        "CPFE3",
+        "CMIG4",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 101547.80109377886,
+      "return": 0.015478010937788556,
+      "return_pct": 1.5478010937788556
+    },
+    {
+      "train_start": "2009-10-20",
+      "train_end": "2010-10-27",
+      "test_start": "2010-10-28",
+      "test_end": "2011-01-31",
+      "selected_assets": [
+        "LREN3",
+        "BBDC4",
+        "PETR4",
+        "ITSA4",
+        "CMIG4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 89858.73525801698,
+      "return": -0.10141264741983014,
+      "return_pct": -10.141264741983013
+    },
+    {
+      "train_start": "2010-01-26",
+      "train_end": "2011-01-31",
+      "test_start": "2011-02-01",
+      "test_end": "2011-05-04",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "VALE3",
+        "CPFE3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 95366.69380803854,
+      "return": -0.046333061919614504,
+      "return_pct": -4.63330619196145
+    },
+    {
+      "train_start": "2010-04-29",
+      "train_end": "2011-05-04",
+      "test_start": "2011-05-05",
+      "test_end": "2011-08-02",
+      "selected_assets": [
+        "PETR4",
+        "CMIG4",
+        "CPFE3",
+        "PETR3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 82533.46585851906,
+      "return": -0.17466534141480938,
+      "return_pct": -17.46653414148094
+    },
+    {
+      "train_start": "2010-07-29",
+      "train_end": "2011-08-02",
+      "test_start": "2011-08-03",
+      "test_end": "2011-11-02",
+      "selected_assets": [
+        "CMIG4",
+        "PETR4",
+        "PETR3",
+        "BBDC4",
+        "SBSP3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 106564.9464646146,
+      "return": 0.06564946464614585,
+      "return_pct": 6.564946464614585
+    },
+    {
+      "train_start": "2010-10-28",
+      "train_end": "2011-11-02",
+      "test_start": "2011-11-03",
+      "test_end": "2012-02-02",
+      "selected_assets": [
+        "PETR4",
+        "CMIG4",
+        "PETR3",
+        "BBDC4",
+        "SBSP3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 113655.28568528105,
+      "return": 0.1365528568528105,
+      "return_pct": 13.655285685281049
+    },
+    {
+      "train_start": "2011-02-01",
+      "train_end": "2012-02-02",
+      "test_start": "2012-02-05",
+      "test_end": "2012-05-07",
+      "selected_assets": [
+        "CMIG4",
+        "PETR4",
+        "SBSP3",
+        "PETR3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 101539.98565422332,
+      "return": 0.015399856542233081,
+      "return_pct": 1.5399856542233081
+    },
+    {
+      "train_start": "2011-05-05",
+      "train_end": "2012-05-07",
+      "test_start": "2012-05-08",
+      "test_end": "2012-08-06",
+      "selected_assets": [
+        "CMIG4",
+        "SBSP3",
+        "BBDC4",
+        "PETR4",
+        "EQTL3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 108689.8351785457,
+      "return": 0.08689835178545713,
+      "return_pct": 8.689835178545714
+    },
+    {
+      "train_start": "2011-08-03",
+      "train_end": "2012-08-06",
+      "test_start": "2012-08-07",
+      "test_end": "2012-11-06",
+      "selected_assets": [
+        "CMIG4",
+        "SBSP3",
+        "PETR4",
+        "BBDC4",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 90201.91319329546,
+      "return": -0.09798086806704542,
+      "return_pct": -9.798086806704543
+    },
+    {
+      "train_start": "2011-11-03",
+      "train_end": "2012-11-06",
+      "test_start": "2012-11-07",
+      "test_end": "2013-02-14",
+      "selected_assets": [
+        "PETR4",
+        "LREN3",
+        "PETR3",
+        "BBDC4",
+        "EQTL3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 94304.18362285003,
+      "return": -0.05695816377149965,
+      "return_pct": -5.695816377149965
+    },
+    {
+      "train_start": "2012-02-05",
+      "train_end": "2013-02-14",
+      "test_start": "2013-02-17",
+      "test_end": "2013-05-16",
+      "selected_assets": [
+        "BBDC4",
+        "PETR4",
+        "LREN3",
+        "ITSA4",
+        "ITUB4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 104893.02624234956,
+      "return": 0.04893026242349552,
+      "return_pct": 4.893026242349552
+    },
+    {
+      "train_start": "2012-05-08",
+      "train_end": "2013-05-16",
+      "test_start": "2013-05-19",
+      "test_end": "2013-08-15",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "BBAS3",
+        "BBDC4",
+        "ITUB4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 85646.41535502516,
+      "return": -0.14353584644974837,
+      "return_pct": -14.353584644974838
+    },
+    {
+      "train_start": "2012-08-07",
+      "train_end": "2013-08-15",
+      "test_start": "2013-08-18",
+      "test_end": "2013-11-12",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "USIM5",
+        "BBDC4",
+        "ITSA4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 111725.20970382092,
+      "return": 0.11725209703820916,
+      "return_pct": 11.725209703820916
+    },
+    {
+      "train_start": "2012-11-07",
+      "train_end": "2013-11-12",
+      "test_start": "2013-11-13",
+      "test_end": "2014-02-17",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "USIM5",
+        "BBAS3",
+        "ITUB4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 76507.27231209706,
+      "return": -0.23492727687902937,
+      "return_pct": -23.492727687902935
+    },
+    {
+      "train_start": "2013-02-17",
+      "train_end": "2014-02-17",
+      "test_start": "2014-02-18",
+      "test_end": "2014-05-22",
+      "selected_assets": [
+        "ITUB4",
+        "ITSA4",
+        "BBDC4",
+        "VALE3",
+        "CMIG4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 115865.99822361277,
+      "return": 0.15865998223612765,
+      "return_pct": 15.865998223612765
+    },
+    {
+      "train_start": "2013-05-19",
+      "train_end": "2014-05-22",
+      "test_start": "2014-05-25",
+      "test_end": "2014-08-24",
+      "selected_assets": [
+        "BBSE3",
+        "CMIG4",
+        "PETR4",
+        "ITUB4",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 117617.72261324071,
+      "return": 0.17617722613240705,
+      "return_pct": 17.617722613240705
+    },
+    {
+      "train_start": "2013-08-18",
+      "train_end": "2014-08-24",
+      "test_start": "2014-08-25",
+      "test_end": "2014-11-20",
+      "selected_assets": [
+        "BBSE3",
+        "PETR4",
+        "PETR3",
+        "BBAS3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 86054.0477075635,
+      "return": -0.13945952292436503,
+      "return_pct": -13.945952292436504
+    },
+    {
+      "train_start": "2013-11-13",
+      "train_end": "2014-11-20",
+      "test_start": "2014-11-23",
+      "test_end": "2015-02-25",
+      "selected_assets": [
+        "BBSE3",
+        "BBDC4",
+        "ITSA4",
+        "ITUB4",
+        "EQTL3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 97629.6552428722,
+      "return": -0.023703447571277958,
+      "return_pct": -2.370344757127796
+    },
+    {
+      "train_start": "2014-02-18",
+      "train_end": "2015-02-25",
+      "test_start": "2015-02-26",
+      "test_end": "2015-05-28",
+      "selected_assets": [
+        "BBSE3",
+        "LREN3",
+        "BBDC4",
+        "ABEV3",
+        "ITSA4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 103336.37660112971,
+      "return": 0.03336376601129709,
+      "return_pct": 3.336376601129709
+    },
+    {
+      "train_start": "2014-05-25",
+      "train_end": "2015-05-28",
+      "test_start": "2015-05-31",
+      "test_end": "2015-08-27",
+      "selected_assets": [
+        "LREN3",
+        "EQTL3",
+        "PETR4",
+        "PETR3",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 87737.56590858573,
+      "return": -0.12262434091414265,
+      "return_pct": -12.262434091414265
+    },
+    {
+      "train_start": "2014-08-25",
+      "train_end": "2015-08-27",
+      "test_start": "2015-08-30",
+      "test_end": "2015-11-30",
+      "selected_assets": [
+        "EQTL3",
+        "ABEV3",
+        "LREN3",
+        "BBSE3",
+        "PETR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 77503.9656021936,
+      "return": -0.22496034397806408,
+      "return_pct": -22.496034397806408
+    },
+    {
+      "train_start": "2014-11-23",
+      "train_end": "2015-11-30",
+      "test_start": "2015-12-01",
+      "test_end": "2016-03-07",
+      "selected_assets": [
+        "MGLU3",
+        "PETR4",
+        "BBSE3",
+        "PETR3",
+        "ABEV3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 145408.88812242268,
+      "return": 0.45408888122422675,
+      "return_pct": 45.408888122422674
+    },
+    {
+      "train_start": "2015-02-26",
+      "train_end": "2016-03-07",
+      "test_start": "2016-03-08",
+      "test_end": "2016-06-07",
+      "selected_assets": [
+        "MGLU3",
+        "PETR4",
+        "PETR3",
+        "BBSE3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 118631.88482596248,
+      "return": 0.18631884825962475,
+      "return_pct": 18.631884825962473
+    },
+    {
+      "train_start": "2015-05-31",
+      "train_end": "2016-06-07",
+      "test_start": "2016-06-08",
+      "test_end": "2016-09-04",
+      "selected_assets": [
+        "MGLU3",
+        "PETR4",
+        "PETR3",
+        "BBSE3",
+        "ABEV3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 135448.88545163986,
+      "return": 0.35448885451639867,
+      "return_pct": 35.44888545163987
+    },
+    {
+      "train_start": "2015-08-30",
+      "train_end": "2016-09-04",
+      "test_start": "2016-09-05",
+      "test_end": "2016-12-06",
+      "selected_assets": [
+        "MGLU3",
+        "PRIO3",
+        "PETR4",
+        "PETR3",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 118918.86957579813,
+      "return": 0.18918869575798136,
+      "return_pct": 18.918869575798137
+    },
+    {
+      "train_start": "2015-12-01",
+      "train_end": "2016-12-06",
+      "test_start": "2016-12-07",
+      "test_end": "2017-03-09",
+      "selected_assets": [
+        "PRIO3",
+        "MGLU3",
+        "PETR4",
+        "CPFE3",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 128667.00429315404,
+      "return": 0.2866700429315403,
+      "return_pct": 28.66700429315403
+    },
+    {
+      "train_start": "2016-03-08",
+      "train_end": "2017-03-09",
+      "test_start": "2017-03-12",
+      "test_end": "2017-06-11",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "CPFE3",
+        "PETR3",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 97658.89453935089,
+      "return": -0.023411054606491066,
+      "return_pct": -2.3411054606491066
+    },
+    {
+      "train_start": "2016-06-08",
+      "train_end": "2017-06-11",
+      "test_start": "2017-06-12",
+      "test_end": "2017-09-10",
+      "selected_assets": [
+        "PRIO3",
+        "CPFE3",
+        "PETR4",
+        "MGLU3",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 97592.46677318309,
+      "return": -0.02407533226816916,
+      "return_pct": -2.407533226816916
+    },
+    {
+      "train_start": "2016-09-05",
+      "train_end": "2017-09-10",
+      "test_start": "2017-09-11",
+      "test_end": "2017-12-12",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "CPFE3",
+        "VALE3",
+        "USIM5"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 104500.059159592,
+      "return": 0.04500059159591996,
+      "return_pct": 4.500059159591996
+    },
+    {
+      "train_start": "2016-12-07",
+      "train_end": "2017-12-12",
+      "test_start": "2017-12-13",
+      "test_end": "2018-03-19",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "BBSE3",
+        "BBDC4",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 120685.77892320475,
+      "return": 0.20685778923204756,
+      "return_pct": 20.685778923204758
+    },
+    {
+      "train_start": "2017-03-12",
+      "train_end": "2018-03-19",
+      "test_start": "2018-03-20",
+      "test_end": "2018-06-19",
+      "selected_assets": [
+        "PETR4",
+        "PETR3",
+        "BBAS3",
+        "PRIO3",
+        "ABEV3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 80433.6222320361,
+      "return": -0.19566377767963905,
+      "return_pct": -19.566377767963907
+    },
+    {
+      "train_start": "2017-06-12",
+      "train_end": "2018-06-19",
+      "test_start": "2018-06-20",
+      "test_end": "2018-09-18",
+      "selected_assets": [
+        "VALE3",
+        "PRIO3",
+        "PETR4",
+        "PETR3",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 131509.62443626617,
+      "return": 0.3150962443626617,
+      "return_pct": 31.509624436266172
+    },
+    {
+      "train_start": "2017-09-11",
+      "train_end": "2018-09-18",
+      "test_start": "2018-09-19",
+      "test_end": "2018-12-20",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "VALE3",
+        "PETR3",
+        "ITUB4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 96178.33179260435,
+      "return": -0.038216682073956454,
+      "return_pct": -3.8216682073956454
+    },
+    {
+      "train_start": "2017-12-13",
+      "train_end": "2018-12-20",
+      "test_start": "2018-12-25",
+      "test_end": "2019-03-28",
+      "selected_assets": [
+        "CMIG4",
+        "PETR4",
+        "SUZB3",
+        "PETR3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 118282.89742389732,
+      "return": 0.18282897423897326,
+      "return_pct": 18.282897423897325
+    },
+    {
+      "train_start": "2018-03-20",
+      "train_end": "2019-03-28",
+      "test_start": "2019-03-31",
+      "test_end": "2019-06-30",
+      "selected_assets": [
+        "PETR4",
+        "SUZB3",
+        "PETR3",
+        "CMIG4",
+        "CSNA3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 93682.24819912002,
+      "return": -0.06317751800879978,
+      "return_pct": -6.317751800879979
+    },
+    {
+      "train_start": "2018-06-20",
+      "train_end": "2019-06-30",
+      "test_start": "2019-07-01",
+      "test_end": "2019-09-26",
+      "selected_assets": [
+        "PETR4",
+        "BBDC4",
+        "PETR3",
+        "BBSE3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 98486.64453215522,
+      "return": -0.015133554678447791,
+      "return_pct": -1.5133554678447791
+    },
+    {
+      "train_start": "2018-09-19",
+      "train_end": "2019-09-26",
+      "test_start": "2019-09-29",
+      "test_end": "2020-01-01",
+      "selected_assets": [
+        "PETR4",
+        "BBSE3",
+        "PETR3",
+        "CMIG4",
+        "CPFE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 106605.43539386855,
+      "return": 0.06605435393868553,
+      "return_pct": 6.605435393868553
+    },
+    {
+      "train_start": "2018-12-25",
+      "train_end": "2020-01-01",
+      "test_start": "2020-01-02",
+      "test_end": "2020-04-01",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "SUZB3",
+        "PETR3",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 62231.62896423999,
+      "return": -0.37768371035760007,
+      "return_pct": -37.768371035760005
+    },
+    {
+      "train_start": "2019-03-31",
+      "train_end": "2020-04-01",
+      "test_start": "2020-04-02",
+      "test_end": "2020-07-05",
+      "selected_assets": [
+        "SUZB3",
+        "PRIO3",
+        "WEGE3",
+        "BBSE3",
+        "VALE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 138578.49965134324,
+      "return": 0.38578499651343234,
+      "return_pct": 38.578499651343236
+    },
+    {
+      "train_start": "2019-07-01",
+      "train_end": "2020-07-05",
+      "test_start": "2020-07-06",
+      "test_end": "2020-10-01",
+      "selected_assets": [
+        "PRIO3",
+        "WEGE3",
+        "PETR4",
+        "VALE3",
+        "SUZB3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 106731.94636695451,
+      "return": 0.06731946366954511,
+      "return_pct": 6.731946366954511
+    },
+    {
+      "train_start": "2019-09-29",
+      "train_end": "2020-10-01",
+      "test_start": "2020-10-04",
+      "test_end": "2021-01-06",
+      "selected_assets": [
+        "PRIO3",
+        "SUZB3",
+        "MGLU3",
+        "PETR4",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 130089.91634442884,
+      "return": 0.30089916344428835,
+      "return_pct": 30.089916344428836
+    },
+    {
+      "train_start": "2020-01-02",
+      "train_end": "2021-01-06",
+      "test_start": "2021-01-07",
+      "test_end": "2021-04-11",
+      "selected_assets": [
+        "PRIO3",
+        "VALE3",
+        "SUZB3",
+        "PETR4",
+        "CSNA3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 107240.69984896677,
+      "return": 0.0724069984896678,
+      "return_pct": 7.240699848966781
+    },
+    {
+      "train_start": "2020-04-02",
+      "train_end": "2021-04-11",
+      "test_start": "2021-04-12",
+      "test_end": "2021-07-12",
+      "selected_assets": [
+        "PRIO3",
+        "SUZB3",
+        "CSNA3",
+        "VALE3",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 82792.19806905548,
+      "return": -0.17207801930944522,
+      "return_pct": -17.207801930944523
+    },
+    {
+      "train_start": "2020-07-06",
+      "train_end": "2021-07-12",
+      "test_start": "2021-07-13",
+      "test_end": "2021-10-10",
+      "selected_assets": [
+        "PETR4",
+        "SUZB3",
+        "VALE3",
+        "PETR3",
+        "CSNA3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 85827.87642162804,
+      "return": -0.14172123578371965,
+      "return_pct": -14.172123578371965
+    },
+    {
+      "train_start": "2020-10-04",
+      "train_end": "2021-10-10",
+      "test_start": "2021-10-12",
+      "test_end": "2022-01-12",
+      "selected_assets": [
+        "PETR4",
+        "CMIG4",
+        "PETR3",
+        "PRIO3",
+        "SUZB3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 100591.14354996779,
+      "return": 0.005911435499677875,
+      "return_pct": 0.5911435499677875
+    },
+    {
+      "train_start": "2021-01-07",
+      "train_end": "2022-01-12",
+      "test_start": "2022-01-13",
+      "test_end": "2022-04-13",
+      "selected_assets": [
+        "SUZB3",
+        "PETR4",
+        "PETR3",
+        "PRIO3",
+        "EGIE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 101782.72343533886,
+      "return": 0.017827234353388732,
+      "return_pct": 1.7827234353388732
+    },
+    {
+      "train_start": "2021-04-12",
+      "train_end": "2022-04-13",
+      "test_start": "2022-04-17",
+      "test_end": "2022-07-14",
+      "selected_assets": [
+        "PETR4",
+        "CPFE3",
+        "BBSE3",
+        "PETR3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 92495.97088402363,
+      "return": -0.07504029115976374,
+      "return_pct": -7.504029115976374
+    },
+    {
+      "train_start": "2021-07-13",
+      "train_end": "2022-07-14",
+      "test_start": "2022-07-17",
+      "test_end": "2022-10-13",
+      "selected_assets": [
+        "PRIO3",
+        "BBSE3",
+        "PETR4",
+        "PETR3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 118873.73474078545,
+      "return": 0.18873734740785464,
+      "return_pct": 18.873734740785466
+    },
+    {
+      "train_start": "2021-10-12",
+      "train_end": "2022-10-13",
+      "test_start": "2022-10-16",
+      "test_end": "2023-01-15",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "PETR3",
+        "ITUB4",
+        "BBSE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 95762.80564970724,
+      "return": -0.04237194350292761,
+      "return_pct": -4.237194350292761
+    },
+    {
+      "train_start": "2022-01-13",
+      "train_end": "2023-01-15",
+      "test_start": "2023-01-16",
+      "test_end": "2023-04-17",
+      "selected_assets": [
+        "PRIO3",
+        "BBSE3",
+        "VALE3",
+        "SUZB3",
+        "GGBR4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 89242.12031285398,
+      "return": -0.10757879687146021,
+      "return_pct": -10.757879687146021
+    },
+    {
+      "train_start": "2022-04-17",
+      "train_end": "2023-04-17",
+      "test_start": "2023-04-18",
+      "test_end": "2023-07-18",
+      "selected_assets": [
+        "PRIO3",
+        "BBSE3",
+        "BBAS3",
+        "PETR4",
+        "CMIG4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 107202.70328273084,
+      "return": 0.07202703282730849,
+      "return_pct": 7.202703282730849
+    },
+    {
+      "train_start": "2022-07-17",
+      "train_end": "2023-07-18",
+      "test_start": "2023-07-19",
+      "test_end": "2023-10-17",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "BBAS3",
+        "EQTL3",
+        "ITSA4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 105422.0332283751,
+      "return": 0.054220332283751116,
+      "return_pct": 5.422033228375112
+    },
+    {
+      "train_start": "2022-10-16",
+      "train_end": "2023-10-17",
+      "test_start": "2023-10-18",
+      "test_end": "2024-01-21",
+      "selected_assets": [
+        "PRIO3",
+        "PETR4",
+        "SUZB3",
+        "PETR3",
+        "BBAS3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 97152.09940341159,
+      "return": -0.028479005965884152,
+      "return_pct": -2.847900596588415
+    },
+    {
+      "train_start": "2023-01-16",
+      "train_end": "2024-01-21",
+      "test_start": "2024-01-22",
+      "test_end": "2024-04-22",
+      "selected_assets": [
+        "PETR4",
+        "BBAS3",
+        "SBSP3",
+        "ITUB4",
+        "PRIO3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 104590.98235442479,
+      "return": 0.045909823544247885,
+      "return_pct": 4.5909823544247885
+    },
+    {
+      "train_start": "2023-04-18",
+      "train_end": "2024-04-22",
+      "test_start": "2024-04-23",
+      "test_end": "2024-07-22",
+      "selected_assets": [
+        "SUZB3",
+        "PRIO3",
+        "PETR4",
+        "SBSP3",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 94003.44343097386,
+      "return": -0.05996556569026146,
+      "return_pct": -5.996556569026145
+    },
+    {
+      "train_start": "2023-07-19",
+      "train_end": "2024-07-22",
+      "test_start": "2024-07-23",
+      "test_end": "2024-10-17",
+      "selected_assets": [
+        "PRIO3",
+        "SBSP3",
+        "PETR4",
+        "BBSE3",
+        "ITUB4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 98773.27850159701,
+      "return": -0.012267214984029828,
+      "return_pct": -1.2267214984029828
+    },
+    {
+      "train_start": "2023-10-18",
+      "train_end": "2024-10-17",
+      "test_start": "2024-10-20",
+      "test_end": "2025-01-22",
+      "selected_assets": [
+        "LREN3",
+        "SUZB3",
+        "ITUB4",
+        "BBDC4",
+        "SBSP3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 91460.100208878,
+      "return": -0.08539899791122008,
+      "return_pct": -8.539899791122007
+    },
+    {
+      "train_start": "2024-01-22",
+      "train_end": "2025-01-22",
+      "test_start": "2025-01-23",
+      "test_end": "2025-04-27",
+      "selected_assets": [
+        "SUZB3",
+        "PRIO3",
+        "PETR4",
+        "BBSE3",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 87636.02581069934,
+      "return": -0.12363974189300653,
+      "return_pct": -12.363974189300652
+    },
+    {
+      "train_start": "2024-04-23",
+      "train_end": "2025-04-27",
+      "test_start": "2025-04-28",
+      "test_end": "2025-07-10",
+      "selected_assets": [
+        "ITUB4",
+        "SUZB3",
+        "PRIO3",
+        "PETR4",
+        "PETR3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 107441.29781306394,
+      "return": 0.0744129781306393,
+      "return_pct": 7.44129781306393
+    },
+    {
+      "train_start": "2024-07-23",
+      "train_end": "2025-07-10",
+      "test_start": "2025-07-11",
+      "test_end": "2025-09-11",
+      "selected_assets": [
+        "ITUB4",
+        "PETR4",
+        "PETR3",
+        "VALE3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 72856.23386574755,
+      "return": -0.27143766134252456,
+      "return_pct": -27.143766134252456
+    },
+    {
+      "train_start": "2024-10-20",
+      "train_end": "2025-09-11",
+      "test_start": "2025-09-12",
+      "test_end": "2025-11-13",
+      "selected_assets": [
+        "ITUB4",
+        "PETR4",
+        "PETR3",
+        "BBDC4",
+        "VALE3"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 93193.84962082069,
+      "return": -0.0680615037917931,
+      "return_pct": -6.80615037917931
+    },
+    {
+      "train_start": "2025-01-23",
+      "train_end": "2025-11-13",
+      "test_start": "2025-11-14",
+      "test_end": "2026-01-15",
+      "selected_assets": [
+        "ITUB4",
+        "PETR4",
+        "PETR3",
+        "VALE3",
+        "BBDC4"
+      ],
+      "initial_value": 100000.0,
+      "final_value": 101040.35158349901,
+      "return": 0.010403515834989996,
+      "return_pct": 1.0403515834989996
+    }
+  ]
+}

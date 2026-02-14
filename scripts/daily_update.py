@@ -48,7 +48,7 @@ def get_universe(db: Database) -> List[str]:
 def update_market_data(
     db: Database,
     provider: BrapiProvider,
-    lookback_days: int = 5,
+    historical: bool = True,  # Nova flag para buscar histórico completo
 ) -> Dict[str, int]:
     """
     Atualiza preços históricos de todos os ativos.
@@ -56,7 +56,7 @@ def update_market_data(
     Args:
         db: Conexão com banco
         provider: Provider de dados
-        lookback_days: Dias para buscar (para atualização incremental)
+        historical: Se True, busca histórico completo disponível
 
     Returns:
         Estatísticas da atualização
@@ -67,16 +67,18 @@ def update_market_data(
     total_prices = 0
     errors = 0
 
-    # Calcular período
-    end_date = datetime.now().strftime("%Y-%m-%d")
-    start_date = (datetime.now() - timedelta(days=lookback_days)).strftime("%Y-%m-%d")
-
     for i, ticker in enumerate(universe, 1):
         try:
             logger.info(f"[{i}/{len(universe)}] Coletando {ticker}...")
 
-            # Buscar preços
-            prices = provider.get_prices(ticker, start_date=start_date, end_date=end_date)
+            # Buscar preços - se historical=True, não passar datas (pega tudo)
+            if historical:
+                prices = provider.get_prices(ticker)  # Sem filtros = histórico completo
+            else:
+                # Atualização incremental (últimos 5 dias)
+                end_date = datetime.now().strftime("%Y-%m-%d")
+                start_date = (datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d")
+                prices = provider.get_prices(ticker, start_date=start_date, end_date=end_date)
 
             if not prices:
                 logger.warning(f"  Sem dados para {ticker}")

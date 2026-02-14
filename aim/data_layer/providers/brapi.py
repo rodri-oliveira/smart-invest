@@ -75,9 +75,19 @@ class BrapiProvider(BaseDataProvider):
                 if candle.get("close") is None:
                     continue  # Pular dias sem negociação
 
+                # Garantir formato de data correto (YYYY-MM-DD)
+                date_str = candle.get("date")
+                if date_str and isinstance(date_str, str):
+                    # Se já veio como string, usar diretamente
+                    pass
+                elif date_str and isinstance(date_str, (int, float)):
+                    # Se veio como timestamp, converter
+                    from datetime import datetime
+                    date_str = datetime.fromtimestamp(date_str).strftime('%Y-%m-%d')
+
                 normalized.append({
                     "ticker": ticker.upper(),
-                    "date": candle.get("date"),
+                    "date": date_str,
                     "open": float(candle.get("open", 0) or 0),
                     "high": float(candle.get("high", 0) or 0),
                     "low": float(candle.get("low", 0) or 0),

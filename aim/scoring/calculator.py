@@ -79,38 +79,36 @@ def calculate_quality_score(
     fundamentals_df: pd.DataFrame,
 ) -> pd.Series:
     """
-    Calcula score de qualidade baseado em fundamentos.
+    Calcula score de qualidade baseado em fundamentos disponíveis.
     
-    Componentes:
-    - ROE (Return on Equity)
-    - Margem líquida
-    - ROIC
-    - Payout ratio (conservadorismo)
-    
-    Args:
-        fundamentals_df: DataFrame com dados fundamentalistas
-    
-    Returns:
-        Série de scores de qualidade
+    Componentes (usando apenas dados disponíveis):
+    - ROE (Return on Equity) - preferencial
+    - Margem líquida - alternativa
+    - ROIC - complementar
     """
-    # Preencher valores ausentes com mediana do universo
-    roe = fundamentals_df["roe"].fillna(fundamentals_df["roe"].median())
-    margin = fundamentals_df["margem_liquida"].fillna(fundamentals_df["margem_liquida"].median())
-    roic = fundamentals_df["roic"].fillna(fundamentals_df["roic"].median())
+    scores = []
     
-    # Normalizar cada componente
-    z_roe = calculate_z_score(roe)
-    z_margin = calculate_z_score(margin)
-    z_roic = calculate_z_score(roic)
+    # Tentar usar ROE se disponível
+    if "roe" in fundamentals_df.columns and fundamentals_df["roe"].notna().any():
+        roe = fundamentals_df["roe"].fillna(fundamentals_df["roe"].median())
+        scores.append(calculate_z_score(roe))
     
-    # Score composto
-    quality_score = (
-        0.4 * z_roe +
-        0.3 * z_margin +
-        0.3 * z_roic
-    )
+    # Tentar usar margem líquida
+    if "net_margin" in fundamentals_df.columns and fundamentals_df["net_margin"].notna().any():
+        margin = fundamentals_df["net_margin"].fillna(fundamentals_df["net_margin"].median())
+        scores.append(calculate_z_score(margin))
     
-    return quality_score
+    # Tentar usar ROIC
+    if "roic" in fundamentals_df.columns and fundamentals_df["roic"].notna().any():
+        roic = fundamentals_df["roic"].fillna(fundamentals_df["roic"].median())
+        scores.append(calculate_z_score(roic))
+    
+    # Se nenhum dado disponível, retornar score neutro (0)
+    if not scores:
+        return pd.Series(0.0, index=fundamentals_df.index)
+    
+    # Média dos scores disponíveis
+    return sum(scores) / len(scores)
 
 
 def calculate_value_score(
@@ -130,29 +128,39 @@ def calculate_value_score(
     Returns:
         Série de scores de valor
     """
-    # Inverso de P/L (Evitar divisão por zero)
-    pl = fundamentals_df["p_l"].replace(0, np.nan)
-    inv_pl = (1 / pl).fillna(0)
+    scores = []
+    weights = []
     
-    # Inverso de P/VP
-    pvp = fundamentals_df["p_vp"].replace(0, np.nan)
-    inv_pvp = (1 / pvp).fillna(0)
+    # P/L (maior peso)
+    if "p_l" in fundamentals_df.columns and fundamentals_df["p_l"].notna().any():
+        pl = fundamentals_df["p_l"].replace(0, np.nan)
+        inv_pl = (1 / pl).fillna(0)
+        scores.append(calculate_z_score(inv_pl))
+        weights.append(0.4)
+    
+    # P/VP
+    if "p_vp" in fundamentals_df.columns and fundamentals_df["p_vp"].notna().any():
+        pvp = fundamentals_df["p_vp"].replace(0, np.nan)
+        inv_pvp = (1 / pvp).fillna(0)
+        scores.append(calculate_z_score(inv_pvp))
+        weights.append(0.3)
     
     # Dividend Yield
-    dy = fundamentals_df["dy"].fillna(0)
+    if "dy" in fundamentals_df.columns and fundamentals_df["dy"].notna().any():
+        dy = fundamentals_df["dy"].fillna(0)
+        scores.append(calculate_z_score(dy))
+        weights.append(0.3)
     
-    # Normalizar
-    z_inv_pl = calculate_z_score(inv_pl)
-    z_inv_pvp = calculate_z_score(inv_pvp)
-    z_dy = calculate_z_score(dy)
+    # Se nenhum dado disponível, retornar score neutro
+    if not scores:
+        return pd.Series(0.0, index=fundamentals_df.index)
     
-    # Score composto
-    value_score = (
-        0.4 * z_inv_pl +
-        0.3 * z_inv_pvp +
-        0.3 * z_dy
-    )
+    # Normalizar pesos
+    total_weight = sum(weights)
+    normalized_weights = [w / total_weight for w in weights]
     
+    # Média ponderada
+    value_score = sum(w * s for w, s in zip(normalized_weights, scores))
     return value_score
 
 
