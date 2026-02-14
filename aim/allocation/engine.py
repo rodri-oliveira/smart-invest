@@ -77,17 +77,39 @@ def build_portfolio_from_scores(
     
     elif strategy == "score_weighted":
         # Peso proporcional ao score
-        total_score = selected["score_final"].sum()
-        if total_score > 0:
+        # Validar scores primeiro - remover NaN/None
+        valid_scores = selected["score_final"].fillna(0)
+        valid_scores = valid_scores[valid_scores > 0]  # Apenas scores positivos
+        
+        if len(valid_scores) == 0:
+            logger.warning("Sem scores válidos para score_weighted, usando equal_weight")
+            weight = calculate_position_size_equal_weight(n_positions, regime)
             for _, row in selected.iterrows():
-                weight = (row["score_final"] / total_score) * TARGET_RV_ALLOCATION.get(regime, 0.8)
-                # Limitar pelo máximo por posição
-                max_pos = MAX_POSITION_SIZE.get(regime, 0.12)
-                weight = min(weight, max_pos)
                 holdings.append({
                     "ticker": row["ticker"],
                     "weight": weight,
-                    "score": row["score_final"],
+                    "score": 0.0,
+                    "sector": row.get("sector", "UNKNOWN"),
+                })
+        else:
+            total_score = valid_scores.sum()
+            target_allocation = TARGET_RV_ALLOCATION.get(regime, 0.8)
+            
+            for _, row in selected.iterrows():
+                score = row["score_final"] if pd.notna(row["score_final"]) else 0
+                if score > 0 and total_score > 0:
+                    # Calcular peso baseado no score relativo
+                    weight = (score / total_score) * target_allocation
+                    # Limitar pelo máximo por posição
+                    max_pos = MAX_POSITION_SIZE.get(regime, 0.12)
+                    weight = min(weight, max_pos)
+                else:
+                    weight = 0.0
+                
+                holdings.append({
+                    "ticker": row["ticker"],
+                    "weight": weight,
+                    "score": score,
                     "sector": row.get("sector", "UNKNOWN"),
                 })
     
@@ -113,13 +135,30 @@ def build_portfolio_from_scores(
     target_allocation = TARGET_RV_ALLOCATION.get(regime, 0.8)
     total_weight = sum(h["weight"] for h in holdings)
     
-    if total_weight > 0:
+    # Validar se o peso total é válido
+    if total_weight <= 0 or not pd.notna(total_weight):
+        logger.error(f"Peso total inválido: {total_weight}, usando equal_weight")
+        # Fallback para equal_weight
+        equal_weight = target_allocation / len(holdings) if holdings else 0
+        for holding in holdings:
+            holding["weight"] = equal_weight
+        total_weight = sum(h["weight"] for h in holdings)
+    
+    if total_weight > 0 and abs(total_weight - target_allocation) > 0.01:
+        # Normalizar para atingir a alocação alvo
         factor = target_allocation / total_weight
         for holding in holdings:
-            holding["weight"] = min(
-                holding["weight"] * factor,
-                MAX_POSITION_SIZE.get(regime, 0.12)
-            )
+            new_weight = holding["weight"] * factor
+            # Limitar pelo máximo por posição
+            max_pos = MAX_POSITION_SIZE.get(regime, 0.12)
+            holding["weight"] = min(new_weight, max_pos)
+    
+    # Garantir que todos os pesos são válidos (não NaN, não negativos)
+    for holding in holdings:
+        if not pd.notna(holding["weight"]) or holding["weight"] < 0:
+            holding["weight"] = 0.0
+        # Arredondar para evitar precisão excessiva
+        holding["weight"] = round(holding["weight"], 4)
     
     # 6. Validar restrições
     weights_dict = {h["ticker"]: h["weight"] for h in holdings}

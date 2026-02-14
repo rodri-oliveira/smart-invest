@@ -8,7 +8,7 @@ from typing import Optional
 from aim.auth import get_auth_manager, JWT_SECRET
 from aim.data_layer.database import Database
 
-router = APIRouter(prefix="/auth", tags=["autenticação"])
+router = APIRouter(tags=["autenticação"])
 security = HTTPBearer()
 
 # Schemas Pydantic

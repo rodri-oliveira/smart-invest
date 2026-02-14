@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from aim.config.settings import get_settings
-from api.routers import assets, health, portfolio, signals
+from api.routers import assets, health, portfolio, signals, auth
 
 settings = get_settings()
 
@@ -30,6 +30,7 @@ app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(assets.router, prefix="/assets", tags=["Assets"])
 app.include_router(signals.router, prefix="/signals", tags=["Signals"])
 app.include_router(portfolio.router, prefix="/portfolio", tags=["Portfolio"])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 
 
 @app.get("/")
