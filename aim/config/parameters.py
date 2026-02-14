@@ -108,11 +108,11 @@ MAX_POSITION_SIZE = {
 
 # Alocação target de RV conforme regime
 TARGET_RV_ALLOCATION = {
-    "RISK_ON_STRONG": 1.0,  # 100% RV
-    "RISK_ON": 0.8,  # 80% RV
-    "TRANSITION": 0.5,  # 50% RV
-    "RISK_OFF": 0.3,  # 30% RV
-    "RISK_OFF_STRONG": 0.0,  # 0% RV
+    "RISK_ON_STRONG": 0.98,  # 98% RV - máxima exposição para especulativo
+    "RISK_ON": 0.95,  # 95% RV - alta exposição para agressivo
+    "TRANSITION": 0.50,  # 50% RV - moderado
+    "RISK_OFF": 0.20,  # 20% RV - conservador (reduzido de 30%)
+    "RISK_OFF_STRONG": 0.05,  # 5% RV - muito conservador
 }
 
 # Limites gerais

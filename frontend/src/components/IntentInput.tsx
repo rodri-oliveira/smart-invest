@@ -33,7 +33,7 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
         <h1 className="text-4xl font-bold gradient-text mb-4">
           Qual é o seu objetivo?
         </h1>
-        <p className="text-[var(--text-secondary)] text-lg">
+        <p className="text-(--text-secondary) text-lg">
           Descreva sua intenção em linguagem natural. Nosso motor quantitativo 
           adaptará a estratégia automaticamente.
         </p>
@@ -52,7 +52,7 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
           <div className="absolute left-4 top-1/2 -translate-y-1/2">
             <Sparkles 
               className={`w-6 h-6 transition-colors duration-300 ${
-                isFocused ? "text-[var(--primary-light)]" : "text-[var(--text-muted)]"
+                isFocused ? "text-primary-light" : "text-(--text-muted)"
               }`} 
             />
           </div>
@@ -66,8 +66,8 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
             placeholder="Ex: Quero alto retorno em 30 dias aceitando risco moderado..."
             className="
               w-full bg-transparent border-none outline-none
-              text-[var(--text-primary)] text-lg
-              placeholder:text-[var(--text-muted)]
+              text-(--text-primary) text-lg
+              placeholder:text-(--text-muted)
               min-h-[80px] max-h-[200px]
               py-4 px-14 resize-none
             "
@@ -85,25 +85,25 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
               transition-all duration-300
               ${
                 prompt.trim() && !isLoading
-                  ? "bg-[var(--gradient-primary)] hover:scale-110 glow-primary"
-                  : "bg-[var(--surface-light)] cursor-not-allowed"
+                  ? "bg-(--gradient-primary) hover:scale-110 glow-primary"
+                  : "bg-surface-light cursor-not-allowed"
               }
             `}
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 text-[var(--text-primary)] animate-spin" />
+              <Loader2 className="w-5 h-5 text-(--text-primary) animate-spin" />
             ) : (
-              <Send className={`w-5 h-5 ${prompt.trim() ? "text-white" : "text-[var(--text-muted)]"}`} />
+              <Send className={`w-5 h-5 ${prompt.trim() ? "text-white" : "text-(--text-muted)"}`} />
             )}
           </button>
         </div>
 
         {/* Character Counter */}
         <div className="flex justify-between mt-3 px-2">
-          <span className="text-xs text-[var(--text-muted)]">
+          <span className="text-xs text-(--text-muted)">
             {prompt.length > 0 && `${prompt.length} caracteres`}
           </span>
-          <span className="text-xs text-[var(--text-muted)]">
+          <span className="text-xs text-(--text-muted)">
             Pressione Enter para enviar
           </span>
         </div>
@@ -111,7 +111,7 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
 
       {/* Example Prompts */}
       <div className="mt-8">
-        <p className="text-sm text-[var(--text-muted)] mb-3 text-center">
+        <p className="text-sm text-(--text-muted) mb-3 text-center">
           Exemplos de prompts:
         </p>
         <div className="flex flex-wrap justify-center gap-3">
@@ -122,10 +122,10 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
               disabled={isLoading}
               className="
                 px-4 py-2 rounded-full text-sm
-                bg-[var(--surface)] border border-[var(--primary-muted)]
-                text-[var(--text-secondary)]
-                hover:bg-[var(--primary-muted)] hover:text-[var(--primary-light)]
-                hover:border-[var(--primary)]
+                bg-surface border border-(--primary-muted)
+                text-(--text-secondary)
+                hover:bg-(--primary-muted) hover:text-primary-light
+                hover:border-primary
                 transition-all duration-200
                 disabled:opacity-50 disabled:cursor-not-allowed
               "
@@ -159,15 +159,15 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
             key={index}
             className="
               glass-card rounded-xl p-4 text-center
-              hover:bg-[var(--surface-light)]
+              hover:bg-surface-light
               transition-all duration-300
             "
           >
             <div className="text-2xl mb-2">{item.icon}</div>
-            <h3 className="text-sm font-semibold text-[var(--primary-light)] mb-1">
+            <h3 className="text-sm font-semibold text-primary-light mb-1">
               {item.title}
             </h3>
-            <p className="text-xs text-[var(--text-muted)]">
+            <p className="text-xs text-(--text-muted)">
               {item.desc}
             </p>
           </div>

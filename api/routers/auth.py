@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional
 
 from aim.auth import get_auth_manager, JWT_SECRET
@@ -13,12 +13,12 @@ security = HTTPBearer()
 
 # Schemas Pydantic
 class UserRegister(BaseModel):
-    email: EmailStr
+    email: str
     password: str
     name: str
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 class UserResponse(BaseModel):

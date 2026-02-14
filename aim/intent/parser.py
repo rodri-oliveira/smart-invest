@@ -39,6 +39,9 @@ class InvestmentIntent:
     horizon: InvestmentHorizon
     risk_tolerance: RiskTolerance
     
+    # Regime definido pelo usuário (override no regime de mercado)
+    user_regime: str  # 'RISK_ON_STRONG', 'RISK_ON', 'TRANSITION', 'RISK_OFF', 'RISK_OFF_STRONG'
+    
     # Parâmetros calculados
     max_volatility: float          # Volatilidade máxima aceitável (anualizada)
     max_drawdown: float           # Drawdown máximo aceitável
@@ -121,7 +124,8 @@ class IntentParser:
         ],
         RiskTolerance.SPECULATIVE: [
             'especulativo', 'especulação', 'muito arriscado', 'alavancado',
-            'speculative', 'very risky', 'high leverage', 'extreme'
+            'speculative', 'very risky', 'high leverage', 'extreme',
+            'aceitando alto risco'
         ],
     }
     
@@ -255,10 +259,20 @@ class IntentParser:
             prompt_lower, objective, horizon, risk_tolerance
         )
         
+        # Mapear tolerância de risco para regime do usuário (override)
+        regime_map = {
+            RiskTolerance.CONSERVATIVE: 'RISK_OFF',
+            RiskTolerance.MODERATE: 'TRANSITION',
+            RiskTolerance.AGGRESSIVE: 'RISK_ON',
+            RiskTolerance.SPECULATIVE: 'RISK_ON_STRONG',
+        }
+        user_regime = regime_map.get(risk_tolerance, 'TRANSITION')
+        
         return InvestmentIntent(
             objective=objective,
             horizon=horizon,
             risk_tolerance=risk_tolerance,
+            user_regime=user_regime,
             max_volatility=params['max_volatility'],
             max_drawdown=params['max_drawdown'],
             target_return=target_return,

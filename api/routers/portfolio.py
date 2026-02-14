@@ -1,8 +1,9 @@
 """Router de carteira e alocação."""
 
+from datetime import date, datetime
 from typing import Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 from pydantic import BaseModel
 
 from aim.allocation.engine import (
@@ -11,16 +12,22 @@ from aim.allocation.engine import (
     save_portfolio_to_database,
 )
 from aim.data_layer.database import Database
+from aim.intent.parser import parse_intent
 
 router = APIRouter()
 
 
 class Holding(BaseModel):
-    """Modelo de posição."""
+    """Modelo de posição com indicadores fundamentalistas."""
     ticker: str
     weight: float
     score: Optional[float]
     sector: Optional[str]
+    p_l: Optional[float] = None  # Preço/Lucro
+    dy: Optional[float] = None   # Dividend Yield (%)
+    trend_30d: Optional[float] = None  # Tendência 30 dias
+    current_price: Optional[float] = None  # Preço atual R$
+    price_date: Optional[date] = None  # Data do preço
 
 
 class Portfolio(BaseModel):
@@ -32,42 +39,134 @@ class Portfolio(BaseModel):
     holdings: List[Holding]
 
 
+class PortfolioBuildRequest(BaseModel):
+    prompt: str = "Quero alto retorno com risco moderado"
+
 @router.post("/build")
 async def build_portfolio(
-    n_positions: int = Query(10, ge=3, le=20, description="Número de posições"),
-    strategy: str = Query("equal_weight", description="Estratégia: equal_weight, score_weighted, risk_parity"),
-    name: str = Query("SmartPortfolio", description="Nome da carteira"),
+    request: PortfolioBuildRequest,
+    n_positions: int = 10,
+    strategy: str = "score_weighted",
+    name: str = "SmartPortfolio",
 ):
-    """Constrói uma nova carteira otimizada."""
+    """Constrói uma nova carteira otimizada baseada no prompt do usuário."""
     db = Database()
     
     try:
-        holdings = build_portfolio_from_scores(
+        # Parse da intenção do usuário
+        intent = parse_intent(request.prompt)
+        
+        # Usar o regime definido pelo prompt (override nos dados macro)
+        user_regime = intent.user_regime
+        
+        # Passar fatores prioritários do prompt para reponderar scores
+        priority_factors = intent.priority_factors
+        
+        result = build_portfolio_from_scores(
             db=db,
             n_positions=n_positions,
             strategy=strategy,
+            regime=user_regime,
+            priority_factors=priority_factors
         )
+        
+        holdings = result[0] if isinstance(result, tuple) else result
+        sector_exposure = result[1] if isinstance(result, tuple) else {}
         
         if not holdings:
             raise HTTPException(status_code=400, detail="Não foi possível construir carteira")
+        
+        # Enriquecer holdings com indicadores fundamentalistas
+        tickers = [h["ticker"] for h in holdings]
+        placeholders = ','.join(['?' for _ in tickers])
+        
+        fundamentals_query = f"""
+            SELECT 
+                f.ticker, f.p_l, f.dy, f.roe
+            FROM fundamentals f
+            INNER JOIN (
+                SELECT ticker, MAX(reference_date) as max_date
+                FROM fundamentals
+                WHERE ticker IN ({placeholders})
+                GROUP BY ticker
+            ) latest ON f.ticker = latest.ticker AND f.reference_date = latest.max_date
+        """
+        
+        fundamentals_data = {}
+        if tickers:
+            try:
+                fund_results = db.fetch_all(fundamentals_query, tuple(tickers))
+                for row in fund_results:
+                    fundamentals_data[row["ticker"]] = {
+                        "p_l": row.get("p_l"),
+                        "dy": row.get("dy"),
+                        "roe": row.get("roe")
+                    }
+            except Exception as e:
+                logger.warning(f"Erro ao buscar fundamentos: {e}")
+        
+        # Buscar preços atuais dos ativos
+        prices_data = {}
+        if tickers:
+            try:
+                for ticker in tickers:
+                    price_query = """
+                        SELECT close as price, date as price_date
+                        FROM prices
+                        WHERE ticker = ?
+                        ORDER BY date DESC
+                        LIMIT 1
+                    """
+                    price_result = db.fetch_one(price_query, (ticker,))
+                    if price_result:
+                        prices_data[ticker] = {
+                            "current_price": price_result.get("price"),
+                            "price_date": price_result.get("price_date")
+                        }
+            except Exception as e:
+                logger.warning(f"Erro ao buscar preços: {e}")
         
         # Salvar no banco
         portfolio_id = save_portfolio_to_database(db, name, holdings)
         
         total_weight = sum(h["weight"] for h in holdings)
         
+        # Buscar data dos dados utilizados
+        data_date = db.fetch_one("SELECT MAX(date) as max_date FROM signals")
+        data_date_str = data_date["max_date"] if data_date else None
+        
+        # Definir limites dinâmicos por regime
+        sector_limits = {
+            "RISK_ON_STRONG": 0.40,
+            "RISK_ON": 0.35,
+            "TRANSITION": 0.20,
+            "RISK_OFF": 0.12,
+            "RISK_OFF_STRONG": 0.10,
+        }
+        max_sector_exposure = sector_limits.get(user_regime, 0.20)
+        
         return {
             "portfolio_id": portfolio_id,
             "name": name,
             "strategy": strategy,
+            "objective": intent.objective.value,  # Objetivo real do usuário (income, return, etc.)
+            "user_regime": user_regime,
+            "max_sector_exposure": max_sector_exposure,
             "n_positions": len(holdings),
             "total_weight": total_weight,
+            "sector_exposure": sector_exposure,
+            "diversification_score": len(sector_exposure) if sector_exposure else 0,
+            "data_date": data_date_str,
             "holdings": [
                 Holding(
                     ticker=h["ticker"],
                     weight=h["weight"],
                     score=h.get("score"),
                     sector=h.get("sector"),
+                    p_l=fundamentals_data.get(h["ticker"], {}).get("p_l"),
+                    dy=fundamentals_data.get(h["ticker"], {}).get("dy"),
+                    current_price=prices_data.get(h["ticker"], {}).get("current_price"),
+                    price_date=prices_data.get(h["ticker"], {}).get("price_date"),
                 )
                 for h in holdings
             ],
@@ -103,3 +202,36 @@ async def get_portfolio(name: str):
         sector_exposure=report["sector_exposure"],
         holdings=holdings,
     )
+
+
+@router.get("/alerts/rebalancing")
+async def get_rebalancing_alerts():
+    """Retorna alertas de rebalanceamento para a carteira mais recente."""
+    from aim.portfolio.rebalancing import RebalancingMonitor, format_alerts_for_display
+    
+    db = Database()
+    
+    try:
+        monitor = RebalancingMonitor(db)
+        alerts = monitor.get_alerts_for_user()
+        formatted_alerts = format_alerts_for_display(alerts)
+        
+        return {
+            "alerts": formatted_alerts,
+            "count": len(formatted_alerts),
+            "has_urgent": any(a["priority"] <= 2 for a in formatted_alerts),
+            "timestamp": datetime.now().isoformat()
+        }
+    except ValueError as e:
+        # Carteira não existe ou sem dados suficientes - retorna lista vazia
+        if "Nenhuma carteira encontrada" in str(e) or "No portfolios found" in str(e):
+            return {
+                "alerts": [],
+                "count": 0,
+                "has_urgent": False,
+                "timestamp": datetime.now().isoformat(),
+                "message": "Nenhuma carteira encontrada. Gere uma recomendação primeiro."
+            }
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar alertas: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar alertas: {str(e)}")

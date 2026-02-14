@@ -42,7 +42,7 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
           <h1 className="text-3xl font-bold gradient-text mb-2">
             {isRegistering ? "Criar Conta" : "Bem-vindo"}
           </h1>
-          <p className="text-[var(--text-secondary)]">
+          <p className="text-text-secondary">
             {isRegistering 
               ? "Crie sua conta para começar a investir" 
               : "Entre para acessar suas recomendações"}
@@ -51,8 +51,8 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-[var(--error)]/10 border border-[var(--error)]/30">
-            <p className="text-sm text-[var(--error)]">{error}</p>
+          <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/30">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 
@@ -60,19 +60,19 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
         <form onSubmit={handleSubmit} className="space-y-5">
           {isRegistering && (
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="Nome completo"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="
-                  w-full bg-[var(--surface)] rounded-xl
+                  w-full bg-surface rounded-xl
                   py-4 pl-12 pr-4
-                  text-[var(--text-primary)]
-                  placeholder:text-[var(--text-muted)]
-                  border border-[var(--surface-light)]
-                  focus:border-[var(--primary)] focus:outline-none
+                  text-(--text-primary)
+                  placeholder:text-(--text-muted)
+                  border border-surface-light
+                  focus:border-primary focus:outline-none
                   transition-colors
                 "
                 required
@@ -81,19 +81,19 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
           )}
 
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type="email"
               placeholder="Email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="
-                w-full bg-[var(--surface)] rounded-xl
+                w-full bg-surface rounded-xl
                 py-4 pl-12 pr-4
-                text-[var(--text-primary)]
-                placeholder:text-[var(--text-muted)]
-                border border-[var(--surface-light)]
-                focus:border-[var(--primary)] focus:outline-none
+                text-text-primary
+                placeholder:text-text-muted
+                border border-surface-light
+                focus:border-primary focus:outline-none
                 transition-colors
               "
               required
@@ -101,19 +101,19 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="
-                w-full bg-[var(--surface)] rounded-xl
+                w-full bg-surface rounded-xl
                 py-4 pl-12 pr-12
-                text-[var(--text-primary)]
-                placeholder:text-[var(--text-muted)]
-                border border-[var(--surface-light)]
-                focus:border-[var(--primary)] focus:outline-none
+                text-text-primary
+                placeholder:text-text-muted
+                border border-surface-light
+                focus:border-primary focus:outline-none
                 transition-colors
               "
               required
@@ -122,7 +122,7 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--primary)]"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary"
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -130,19 +130,19 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
 
           {isRegistering && (
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Confirmar senha"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className="
-                  w-full bg-[var(--surface)] rounded-xl
+                  w-full bg-surface rounded-xl
                   py-4 pl-12 pr-4
-                  text-[var(--text-primary)]
-                  placeholder:text-[var(--text-muted)]
-                  border border-[var(--surface-light)]
-                  focus:border-[var(--primary)] focus:outline-none
+                  text-(--text-primary)
+                  placeholder:text-(--text-muted)
+                  border border-surface-light
+                  focus:border-primary focus:outline-none
                   transition-colors
                 "
                 required
@@ -155,7 +155,7 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
             disabled={isLoading}
             className="
               w-full py-4 rounded-xl
-              bg-[var(--gradient-primary)]
+              bg-(--gradient-primary)
               text-white font-semibold
               flex items-center justify-center gap-2
               hover:opacity-90 hover:scale-[1.02]
@@ -181,7 +181,7 @@ export default function AuthForm({ onLogin, onRegister, isLoading, error }: Auth
           <button
             type="button"
             onClick={() => setIsRegistering(!isRegistering)}
-            className="text-sm text-[var(--text-muted)] hover:text-[var(--primary-light)] transition-colors"
+            className="text-sm text-text-muted hover:text-primary-light transition-colors"
           >
             {isRegistering 
               ? "Já tem uma conta? Entre" 

@@ -16,6 +16,15 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class AssetPrice:
+    """Preço atual de um ativo."""
+    ticker: str
+    current_price: Optional[float]
+    price_date: Optional[str]
+    currency: str = "BRL"
+
+
+@dataclass
 class EnrichedRecommendation:
     """Recomendação enriquecida com justificativa completa."""
     
@@ -45,6 +54,9 @@ class EnrichedRecommendation:
     # Metadados
     timestamp: str
     confidence_score: float       # 0-1, confiança geral da recomendação
+    
+    # Dados de preços
+    prices: Dict[str, AssetPrice] = field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
         """Converte para dicionário para serialização."""
@@ -126,6 +138,9 @@ class OutputEnricher:
             tickers, risk_assessment, intent
         )
         
+        # 5. Buscar preços atuais dos ativos
+        prices = self._get_current_prices(tickers)
+        
         # 6. Criar cenários otimista/pessimista
         best_case = self._create_best_case_scenario(tickers, weights)
         worst_case = self._create_worst_case_scenario(tickers, weights, risk_assessment)
@@ -151,6 +166,7 @@ class OutputEnricher:
             worst_case_scenario=worst_case,
             timestamp=date,
             confidence_score=confidence,
+            prices=prices,
         )
     
     def _create_technical_rationale(
@@ -396,6 +412,40 @@ class OutputEnricher:
             ],
         }
     
+    def _get_current_prices(self, tickers: List[str]) -> Dict[str, AssetPrice]:
+        """Busca preços atuais dos ativos da tabela prices."""
+        prices = {}
+        for ticker in tickers:
+            try:
+                query = """
+                    SELECT close as price, date as price_date
+                    FROM prices
+                    WHERE ticker = ?
+                    ORDER BY date DESC
+                    LIMIT 1
+                """
+                result = self.db.fetch_one(query, (ticker,))
+                if result:
+                    prices[ticker] = AssetPrice(
+                        ticker=ticker,
+                        current_price=result.get('price'),
+                        price_date=result.get('price_date')
+                    )
+                else:
+                    prices[ticker] = AssetPrice(
+                        ticker=ticker,
+                        current_price=None,
+                        price_date=None
+                    )
+            except Exception as e:
+                logger.warning(f"Erro ao buscar preço para {ticker}: {e}")
+                prices[ticker] = AssetPrice(
+                    ticker=ticker,
+                    current_price=None,
+                    price_date=None
+                )
+        return prices
+
     def _calculate_confidence(
         self,
         intent: InvestmentIntent,
