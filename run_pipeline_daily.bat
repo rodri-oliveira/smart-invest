@@ -21,7 +21,7 @@ echo.
 
 :: Executar pipeline completo
 echo [1/4] Atualizando dados de mercado...
-python scripts/daily_pipeline.py --skip-macro --skip-sentiment 2>nul || python scripts/daily_pipeline.py
+python scripts/daily_update.py
 if %errorlevel% neq 0 (
     echo ERRO no pipeline! Verifique logs.
     pause
@@ -38,7 +38,7 @@ forfiles /p "logs" /s /m "*.log" /d -7 /c "cmd /c del @path" 2>nul
 echo.
 
 echo [4/4] Status do sistema:
-python -c "from aim.data_layer.database import Database; db = Database(); r = db.fetch_one('SELECT COUNT(*) as c FROM market_prices WHERE date = date(\"now\")'); print(f'  Precos de hoje: {r[\"c\"]} registros')" 2>nul || echo "  (verificacao manual necessaria)"
+python -c "from aim.data_layer.database import Database; db = Database(); r = db.fetch_one('SELECT COUNT(*) as c FROM prices WHERE date = date(\"now\")'); print(f'  Precos de hoje: {r[\"c\"]} registros')" 2>nul || echo "  (verificacao manual necessaria)"
 
 echo.
 echo ==========================================

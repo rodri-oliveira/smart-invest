@@ -1,45 +1,94 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Send, Loader2 } from "lucide-react";
+import { Sparkles, Send, Loader2, Target, BarChart3, ShieldCheck } from "lucide-react";
 
 interface IntentInputProps {
   onSubmit: (prompt: string) => void;
   isLoading?: boolean;
 }
 
+const EXAMPLES = [
+  "Quero alto retorno em 30 dias",
+  "Proteger meu capital de forma conservadora",
+  "Renda passiva com dividendos",
+  "Especular aceitando alto risco",
+  "Como esta a acao da Petrobras hoje?",
+  "Me mostra a situacao do Santander",
+  "Como esta WEGE3?",
+  "Quero montar carteira para iniciantes",
+  "Tenho perfil moderado e foco em longo prazo",
+  "Prefiro baixo risco e caixa de seguranca",
+  "Me explique os riscos da estrategia em linguagem simples",
+  "Quais ativos estao mais fortes no momento?",
+];
+
+const ONBOARDING_KEY = "smartinvest_onboarding_v1_done";
+
+function pickExamples(items: string[], count: number): string[] {
+  const clone = [...items];
+  for (let i = clone.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [clone[i], clone[j]] = [clone[j], clone[i]];
+  }
+  return clone.slice(0, count);
+}
+
 export default function IntentInput({ onSubmit, isLoading = false }: IntentInputProps) {
   const [prompt, setPrompt] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [examples, setExamples] = useState<string[]>(() => pickExamples(EXAMPLES, 6));
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(ONBOARDING_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (prompt.trim() && !isLoading) {
-      onSubmit(prompt.trim());
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    try {
+      localStorage.setItem(ONBOARDING_KEY, "1");
+    } catch {
+      // no-op
     }
   };
 
-  const examples = [
-    "Quero alto retorno em 30 dias",
-    "Proteger meu capital conservadoramente",
-    "Renda passiva com dividendos",
-    "Especular aceitando alto risco",
-  ];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const normalized = prompt.trim();
+    if (normalized && !isLoading) {
+      onSubmit(normalized);
+    }
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold gradient-text mb-4">
-          Qual é o seu objetivo?
-        </h1>
+        <h1 className="text-4xl font-bold gradient-text mb-4">Qual e o seu objetivo?</h1>
         <p className="text-(--text-secondary) text-lg">
-          Descreva sua intenção em linguagem natural. Nosso motor quantitativo 
-          adaptará a estratégia automaticamente.
+          Descreva sua intencao em linguagem natural. O motor quantitativo adapta a estrategia automaticamente.
         </p>
       </div>
 
-      {/* Input Container */}
+      {showOnboarding && (
+        <div className="mb-6 p-4 rounded-xl bg-surface border border-primary-light/20">
+          <h3 className="text-sm font-semibold text-primary-light">Primeiro uso em 3 passos</h3>
+          <p className="text-xs text-(--text-secondary) mt-2">
+            1) Escreva seu objetivo em linguagem simples. 2) Leia os blocos O que aconteceu e O que fazer agora.
+            3) Clique em <strong>+</strong> para testar no simulador antes de decidir.
+          </p>
+          <button
+            type="button"
+            onClick={dismissOnboarding}
+            className="mt-3 px-3 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary-light transition-colors text-xs"
+          >
+            Entendi
+          </button>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="relative">
         <div
           className={`
@@ -48,22 +97,29 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
             ${isFocused ? "glow-primary scale-[1.02]" : "hover:scale-[1.01]"}
           `}
         >
-          {/* Sparkle Icon */}
           <div className="absolute left-4 top-1/2 -translate-y-1/2">
-            <Sparkles 
+            <Sparkles
               className={`w-6 h-6 transition-colors duration-300 ${
                 isFocused ? "text-primary-light" : "text-(--text-muted)"
-              }`} 
+              }`}
             />
           </div>
 
-          {/* Text Input */}
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Ex: Quero alto retorno em 30 dias aceitando risco moderado..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                const normalized = prompt.trim();
+                if (normalized && !isLoading) {
+                  onSubmit(normalized);
+                }
+              }
+            }}
+            placeholder="Ex: Quero alto retorno em 30 dias com risco moderado..."
             className="
               w-full bg-transparent border-none outline-none
               text-(--text-primary) text-lg
@@ -74,7 +130,6 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
             disabled={isLoading}
           />
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={!prompt.trim() || isLoading}
@@ -98,26 +153,27 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
           </button>
         </div>
 
-        {/* Character Counter */}
         <div className="flex justify-between mt-3 px-2">
-          <span className="text-xs text-(--text-muted)">
-            {prompt.length > 0 && `${prompt.length} caracteres`}
-          </span>
-          <span className="text-xs text-(--text-muted)">
-            Pressione Enter para enviar
-          </span>
+          <span className="text-xs text-(--text-muted)">{prompt.length > 0 && `${prompt.length} caracteres`}</span>
+          <span className="text-xs text-(--text-muted)">Enter envia. Shift + Enter quebra linha.</span>
         </div>
       </form>
 
-      {/* Example Prompts */}
       <div className="mt-8">
-        <p className="text-sm text-(--text-muted) mb-3 text-center">
-          Exemplos de prompts:
-        </p>
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <p className="text-sm text-(--text-muted)">Exemplos de prompts:</p>
+          <button
+            type="button"
+            onClick={() => setExamples(pickExamples(EXAMPLES, 6))}
+            className="text-xs text-primary-light hover:text-primary transition-colors"
+          >
+            trocar exemplos
+          </button>
+        </div>
         <div className="flex flex-wrap justify-center gap-3">
-          {examples.map((example, index) => (
+          {examples.map((example) => (
             <button
-              key={index}
+              key={example}
               onClick={() => setPrompt(example)}
               disabled={isLoading}
               className="
@@ -136,40 +192,35 @@ export default function IntentInput({ onSubmit, isLoading = false }: IntentInput
         </div>
       </div>
 
-      {/* Info Cards */}
       <div className="grid grid-cols-3 gap-4 mt-12">
         {[
-          { 
-            title: "Adaptativo", 
+          {
+            title: "Adaptativo",
             desc: "Motor ajusta aos seus objetivos",
-            icon: "🎯"
+            icon: <Target className="w-6 h-6 text-primary-light" />,
           },
-          { 
-            title: "Quantitativo", 
-            desc: "Análise baseada em dados reais",
-            icon: "📊"
+          {
+            title: "Quantitativo",
+            desc: "Analise baseada em dados reais",
+            icon: <BarChart3 className="w-6 h-6 text-primary-light" />,
           },
-          { 
-            title: "Risk-First", 
+          {
+            title: "Risk-First",
             desc: "Risco calculado antes de retorno",
-            icon: "🛡️"
+            icon: <ShieldCheck className="w-6 h-6 text-primary-light" />,
           },
-        ].map((item, index) => (
+        ].map((item) => (
           <div
-            key={index}
+            key={item.title}
             className="
               glass-card rounded-xl p-4 text-center
               hover:bg-surface-light
               transition-all duration-300
             "
           >
-            <div className="text-2xl mb-2">{item.icon}</div>
-            <h3 className="text-sm font-semibold text-primary-light mb-1">
-              {item.title}
-            </h3>
-            <p className="text-xs text-(--text-muted)">
-              {item.desc}
-            </p>
+            <div className="text-2xl mb-2 flex justify-center">{item.icon}</div>
+            <h3 className="text-sm font-semibold text-primary-light mb-1">{item.title}</h3>
+            <p className="text-xs text-(--text-muted)">{item.desc}</p>
           </div>
         ))}
       </div>

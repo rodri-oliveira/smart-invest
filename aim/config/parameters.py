@@ -115,6 +115,24 @@ TARGET_RV_ALLOCATION = {
     "RISK_OFF_STRONG": 0.05,  # 5% RV - muito conservador
 }
 
+# Limites dinâmicos por regime (fonte única para backend e frontend)
+MAX_SECTOR_EXPOSURE_BY_REGIME = {
+    "RISK_ON_STRONG": 0.40,
+    "RISK_ON": 0.35,
+    "TRANSITION": 0.20,
+    "RISK_OFF": 0.12,
+    "RISK_OFF_STRONG": 0.10,
+}
+
+# Teto operacional por ativo após seleção/ranqueamento
+MAX_ASSET_EXPOSURE_BY_REGIME = {
+    "RISK_ON_STRONG": 0.15,
+    "RISK_ON": 0.12,
+    "TRANSITION": 0.06,
+    "RISK_OFF": 0.04,
+    "RISK_OFF_STRONG": 0.02,
+}
+
 # Limites gerais
 MIN_POSITION_SIZE = 0.01  # 1% mínimo
 MAX_SECTOR_EXPOSURE = 0.30  # 30% por setor

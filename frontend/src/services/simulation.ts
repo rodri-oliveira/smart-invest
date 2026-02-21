@@ -20,6 +20,34 @@ export interface OperationAlert {
   is_real: boolean;
 }
 
+export interface OrderHistoryItem {
+  order_id: number;
+  ticker: string;
+  order_type: 'BUY' | 'SELL';
+  quantity: number;
+  price_at_order: number;
+  order_date: string;
+  is_real: boolean;
+}
+
+export interface DailyGuidanceItem {
+  ticker: string;
+  action: string;
+  reason: string;
+  risk_level: string;
+  signal_score?: number | null;
+  profit_loss_pct?: number | null;
+}
+
+export interface DailyPlan {
+  generated_at: string;
+  is_real: boolean;
+  profile: string;
+  summary: string;
+  next_step: string;
+  guidance: DailyGuidanceItem[];
+}
+
 export const simulationService = {
   async getPositions(isReal: boolean = false): Promise<SimulatedPosition[]> {
     const token = localStorage.getItem('token');
@@ -50,5 +78,23 @@ export const simulationService = {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
-  }
+  },
+
+  async getOrdersHistory(isReal?: boolean): Promise<OrderHistoryItem[]> {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/simulation/orders`, {
+      params: { is_real: isReal },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
+
+  async getDailyPlan(isReal: boolean = false): Promise<DailyPlan> {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/simulation/daily-plan`, {
+      params: { is_real: isReal },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  },
 };

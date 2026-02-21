@@ -135,22 +135,23 @@ class SentimentScorer:
         """Calcula sentimento baseado em tendência técnica dos principais ativos."""
         score = 0.0
         factors = []
-        
-        # Usar média dos top 5 ativos como proxy de mercado (IBOVESPA não disponível)
-        query = """
-            SELECT date, AVG(close) as avg_close
-            FROM prices
-            WHERE ticker IN ('PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'ABEV3')
-            AND date <= ?
-            GROUP BY date
-            ORDER BY date DESC
-            LIMIT 22
-        """
-        
-        results = self.db.fetch_all(query, (date,))
-        
+
+        tickers = self._get_market_proxy_tickers(date, limit=10)
+        results: List[Dict[str, Any]] = []
+        if tickers:
+            placeholders = ",".join(["?"] * len(tickers))
+            query = f"""
+                SELECT date, AVG(close) as avg_close
+                FROM prices
+                WHERE ticker IN ({placeholders})
+                AND date <= ?
+                GROUP BY date
+                ORDER BY date DESC
+                LIMIT 22
+            """
+            results = self.db.fetch_all(query, tuple(tickers + [date]))
+
         if len(results) < 10:
-            # Fallback: usar qualquer ativo disponível
             query_fallback = """
                 SELECT date, AVG(close) as avg_close
                 FROM prices
@@ -196,23 +197,24 @@ class SentimentScorer:
         """Calcula sentimento baseado em volatilidade média do mercado."""
         score = 0.0
         factors = []
-        
-        # Buscar volatilidade média dos principais ativos
-        query = """
-            SELECT AVG(vol_21d) as avg_vol
-            FROM features
-            WHERE ticker IN ('PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'ABEV3')
-            AND date <= ?
-            AND vol_21d IS NOT NULL
-            GROUP BY date
-            ORDER BY date DESC
-            LIMIT 1
-        """
-        
-        result = self.db.fetch_one(query, (date,))
-        
+
+        tickers = self._get_market_proxy_tickers(date, limit=10)
+        result = None
+        if tickers:
+            placeholders = ",".join(["?"] * len(tickers))
+            query = f"""
+                SELECT AVG(vol_21d) as avg_vol
+                FROM features
+                WHERE ticker IN ({placeholders})
+                AND date <= ?
+                AND vol_21d IS NOT NULL
+                GROUP BY date
+                ORDER BY date DESC
+                LIMIT 1
+            """
+            result = self.db.fetch_one(query, tuple(tickers + [date]))
+
         if not result or not result["avg_vol"]:
-            # Fallback: usar qualquer volatilidade disponível
             query_fallback = """
                 SELECT AVG(vol_21d) as avg_vol
                 FROM features
@@ -272,6 +274,45 @@ class SentimentScorer:
             if c.get("data_available", False)
         )
         return available / len(components) if components else 0.0
+
+    def _get_market_proxy_tickers(self, date: str, limit: int = 10) -> List[str]:
+        """Seleciona tickers dinâmicos para proxy de mercado."""
+        ranked = self.db.fetch_all(
+            """
+            SELECT ticker
+            FROM signals
+            WHERE date = (
+                SELECT MAX(date)
+                FROM signals
+                WHERE date <= ?
+            )
+            ORDER BY rank_universe ASC
+            LIMIT ?
+            """,
+            (date, limit),
+        )
+        tickers = [row["ticker"] for row in ranked] if ranked else []
+        if tickers:
+            return tickers
+
+        liquid = self.db.fetch_all(
+            """
+            SELECT p.ticker, MAX(p.volume) as vol
+            FROM prices p
+            JOIN assets a ON a.ticker = p.ticker
+            WHERE a.is_active = 1
+              AND p.date = (
+                SELECT MAX(date)
+                FROM prices
+                WHERE date <= ?
+              )
+            GROUP BY p.ticker
+            ORDER BY vol DESC
+            LIMIT ?
+            """,
+            (date, limit),
+        )
+        return [row["ticker"] for row in liquid] if liquid else []
 
 
 def update_sentiment_to_database(db: Database, date: Optional[str] = None) -> bool:

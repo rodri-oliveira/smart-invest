@@ -1,6 +1,4 @@
-"""Configurações do aplicativo usando Pydantic Settings."""
-
-from functools import lru_cache
+﻿from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
@@ -8,12 +6,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Configurações centralizadas do Smart Invest."""
+    """Configuracoes centralizadas do Smart Invest."""
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore",  # Permitir variáveis extras no .env
+        extra="ignore",
     )
 
     # Ambiente
@@ -32,22 +30,36 @@ class Settings(BaseSettings):
     anthropic_api_key: Optional[str] = None
     openai_api_key: Optional[str] = None
 
-    # Segurança
+    # Seguranca
     secret_key: str = "change-me-in-production-minimum-32-chars-long"
+    cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    cors_allow_origin_regex: Optional[str] = None
+    auth_cookie_name: str = "smart_invest_token"
+    auth_cookie_secure: bool = False
+    auth_cookie_samesite: str = "lax"
 
-    # Configurações
+    # Configuracoes
     cache_ttl_hours: int = 1
     request_timeout_seconds: int = 30
     max_retries: int = 3
+    audit_retention_days: int = 180
+    audit_purge_interval_minutes: int = 60
+
+    # Atualizacao automatica
+    auto_update_on_startup: bool = True
+    auto_update_daily_schedule: bool = True
+    auto_update_hour: int = 19
+    auto_update_minute: int = 5
+    auto_update_weekdays_only: bool = True
 
     @property
     def is_development(self) -> bool:
-        """Retorna True se ambiente é desenvolvimento."""
+        """Retorna True se ambiente e desenvolvimento."""
         return self.environment.lower() in ("development", "dev", "local")
 
     @property
     def is_production(self) -> bool:
-        """Retorna True se ambiente é produção."""
+        """Retorna True se ambiente e producao."""
         return self.environment.lower() == "production"
 
     @property
@@ -60,15 +72,20 @@ class Settings(BaseSettings):
 
     @property
     def has_brapi_token(self) -> bool:
-        """Retorna True se token brapi está configurado."""
+        """Retorna True se token brapi esta configurado."""
         return self.brapi_token is not None and len(self.brapi_token) > 0
+
+    @property
+    def cors_origins(self) -> list[str]:
+        """Retorna lista de origins permitidas para CORS."""
+        return [
+            origin.strip()
+            for origin in self.cors_allowed_origins.split(",")
+            if origin.strip()
+        ]
 
 
 @lru_cache()
 def get_settings() -> Settings:
-    """
-    Retorna instância singleton de Settings.
-    
-    Usa LRU cache para evitar recriação múltipla.
-    """
+    """Retorna instancia singleton de Settings."""
     return Settings()

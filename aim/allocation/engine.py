@@ -1,13 +1,15 @@
 """Allocation Engine - construção e rebalanceamento de carteiras."""
 
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 
 from aim.config.parameters import (
     DEFAULT_UNIVERSE,
+    MAX_ASSET_EXPOSURE_BY_REGIME,
     MAX_POSITION_SIZE,
+    MAX_SECTOR_EXPOSURE_BY_REGIME,
     MIN_POSITION_SIZE,
     TARGET_RV_ALLOCATION,
 )
@@ -29,7 +31,7 @@ def build_portfolio_from_scores(
     strategy: str = "equal_weight",
     regime: Optional[str] = None,
     priority_factors: Optional[List[str]] = None,
-) -> List[Dict]:
+) -> Tuple[List[Dict], Dict[str, float], Dict[str, Any]] | List[Dict]:
     """
     Constrói carteira a partir dos scores calculados.
     
@@ -53,9 +55,16 @@ def build_portfolio_from_scores(
         regime = regime_data["regime"] if regime_data else "TRANSITION"
     
     logger.info(f"Regime: {regime}")
+    target_allocation = TARGET_RV_ALLOCATION.get(regime, 0.8)
+    allocation_note = ""
+    positive_score_count = 0
     
     # 2. Obter top ativos ranqueados
-    top_assets = get_top_ranked_assets(db, date=date, top_n=n_positions * 3)  # Pegar mais para filtrar
+    # score_weighted precisa de um universo maior para reduzir subalocação.
+    candidate_multiplier = 8 if strategy == "score_weighted" else 3
+    top_assets = get_top_ranked_assets(
+        db, date=date, top_n=n_positions * candidate_multiplier
+    )
     
     if top_assets.empty:
         logger.error("Sem dados de ranking disponíveis")
@@ -117,11 +126,16 @@ def build_portfolio_from_scores(
     elif strategy == "score_weighted":
         # Peso proporcional ao score
         # Validar scores primeiro - remover NaN/None
-        valid_scores = selected["score_final"].fillna(0)
-        valid_scores = valid_scores[valid_scores > 0]  # Apenas scores positivos
+        raw_scores = selected["score_final"].fillna(0)
+        valid_scores = raw_scores[raw_scores > 0]  # Apenas scores positivos
+        positive_score_count = len(valid_scores)
         
         if len(valid_scores) == 0:
             logger.warning("Sem scores válidos para score_weighted, usando equal_weight")
+            allocation_note = (
+                "Nenhum ativo com score positivo no recorte atual. "
+                "Aplicado fallback equal_weight."
+            )
             weight = calculate_position_size_equal_weight(n_positions, regime)
             for _, row in selected.iterrows():
                 holdings.append({
@@ -131,14 +145,26 @@ def build_portfolio_from_scores(
                     "sector": row.get("sector", "UNKNOWN"),
                 })
         else:
-            total_score = valid_scores.sum()
-            target_allocation = TARGET_RV_ALLOCATION.get(regime, 0.8)
+            # Com poucos scores positivos, deslocamos scores pelo ranking
+            # para reduzir caixa em perfis pró-risco.
+            if len(valid_scores) < n_positions:
+                min_score = raw_scores.min()
+                effective_scores = raw_scores - min_score + 1e-6
+                allocation_note = (
+                    f"Apenas {len(valid_scores)}/{n_positions} ativos tinham score "
+                    "positivo. Aplicada redistribuição por ranking."
+                )
+            else:
+                effective_scores = raw_scores.clip(lower=0)
+
+            total_score = effective_scores.sum()
             
-            for _, row in selected.iterrows():
+            for idx, row in selected.iterrows():
                 score = row["score_final"] if pd.notna(row["score_final"]) else 0
-                if score > 0 and total_score > 0:
+                effective_score = effective_scores.loc[idx] if total_score > 0 else 0
+                if total_score > 0:
                     # Calcular peso baseado no score relativo
-                    weight = (score / total_score) * target_allocation
+                    weight = (effective_score / total_score) * target_allocation
                     # Limitar pelo máximo por posição
                     max_pos = MAX_POSITION_SIZE.get(regime, 0.12)
                     weight = min(weight, max_pos)
@@ -171,8 +197,6 @@ def build_portfolio_from_scores(
             })
     
     # 5. Normalizar para somar 100% da alocação alvo
-    target_allocation = TARGET_RV_ALLOCATION.get(regime, 0.8)
-    
     # Log da configuração aplicada
     logger.info(f"Target allocation para regime {regime}: {target_allocation:.1%}")
 
@@ -194,24 +218,10 @@ def build_portfolio_from_scores(
     total_weight = sum(h["weight"] for h in holdings)
     
     # 5.1 Aplicar limites de exposição setorial rigorosos
-    sector_limits = {
-        "RISK_ON_STRONG": 0.40,
-        "RISK_ON": 0.35,         
-        "TRANSITION": 0.20,      
-        "RISK_OFF": 0.12,        # Máximo 12% por setor no conservador
-        "RISK_OFF_STRONG": 0.10, 
-    }
-    max_sector_exposure = sector_limits.get(regime, 0.20)
+    max_sector_exposure = MAX_SECTOR_EXPOSURE_BY_REGIME.get(regime, 0.20)
     
     # Limite por ativo individual baseado no regime (força diversificação)
-    asset_limits = {
-        "RISK_ON_STRONG": 0.15,
-        "RISK_ON": 0.12,
-        "TRANSITION": 0.06,
-        "RISK_OFF": 0.04,        # No máximo 4% por ativo no conservador
-        "RISK_OFF_STRONG": 0.02, # No máximo 2% por ativo
-    }
-    max_asset_exposure = asset_limits.get(regime, 0.06)
+    max_asset_exposure = MAX_ASSET_EXPOSURE_BY_REGIME.get(regime, 0.06)
     
     # Aplicar limites individuais primeiro
     for h in holdings:
@@ -324,8 +334,29 @@ def build_portfolio_from_scores(
     logger.info(f"✓ Carteira construída com {len(holdings)} posições")
     logger.info(f"  Alocação total: {sum(h['weight'] for h in holdings):.1%}")
     logger.info(f"  Exposição setorial: {final_sector_exposure}")
+
+    achieved_allocation = sum(h["weight"] for h in holdings)
+    allocation_gap = target_allocation - achieved_allocation
+    capped_assets = sum(1 for h in holdings if h.get("asset_capped"))
+    sector_capped_assets = sum(1 for h in holdings if h.get("sector_capped"))
+
+    if not allocation_note and allocation_gap > 0.02:
+        allocation_note = (
+            f"Alocação abaixo do alvo por restrições ativas "
+            f"(ativos no teto: {capped_assets}, ajustes setoriais: {sector_capped_assets})."
+        )
+
+    allocation_diagnostics = {
+        "target_rv_allocation": round(target_allocation, 4),
+        "achieved_rv_allocation": round(achieved_allocation, 4),
+        "allocation_gap": round(allocation_gap, 4),
+        "allocation_note": allocation_note,
+        "positive_score_assets": positive_score_count,
+        "asset_caps_applied": capped_assets,
+        "sector_caps_applied": sector_capped_assets,
+    }
     
-    return holdings, final_sector_exposure
+    return holdings, final_sector_exposure, allocation_diagnostics
 
 
 def calculate_rebalance_trades(

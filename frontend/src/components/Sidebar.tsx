@@ -1,13 +1,14 @@
-import React from 'react';
-import { 
-  LayoutDashboard, 
-  LineChart, 
-  Wallet, 
-  History, 
-  Settings, 
-  ChevronLeft, 
+﻿import React from 'react';
+import {
+  LayoutDashboard,
+  LineChart,
+  Wallet,
+  History,
+  Settings,
+  ChevronLeft,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Lock,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -15,75 +16,80 @@ interface SidebarProps {
   onTabChange: (tab: string) => void;
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
+  features?: {
+    allow_real_portfolio: boolean;
+    allow_history: boolean;
+  };
 }
 
-export default function Sidebar({ activeTab, onTabChange, isCollapsed, setIsCollapsed }: SidebarProps) {
+export default function Sidebar({
+  activeTab,
+  onTabChange,
+  isCollapsed,
+  setIsCollapsed,
+  features,
+}: SidebarProps) {
   const menuItems = [
-    { id: 'recommendation', label: 'Recomendação', icon: LayoutDashboard },
-    { id: 'simulator', label: 'Simulador de Compra', icon: LineChart },
-    { id: 'portfolio', label: 'Minha Carteira', icon: Wallet },
-    { id: 'history', label: 'Histórico', icon: History },
+    { id: 'recommendation', label: 'Recomendacao', icon: LayoutDashboard, locked: false },
+    { id: 'simulator', label: 'Simulador de Compra', icon: LineChart, locked: false },
+    { id: 'portfolio', label: 'Minha Carteira', icon: Wallet, locked: features?.allow_real_portfolio === false },
+    { id: 'history', label: 'Historico', icon: History, locked: features?.allow_history === false },
   ];
 
   return (
-    <aside 
+    <aside
       className={`
         fixed left-0 top-0 h-screen bg-surface border-r border-surface-light
         transition-all duration-300 z-50 flex flex-col
         ${isCollapsed ? 'w-20' : 'w-64'}
       `}
     >
-      {/* Logo */}
       <div className="p-6 flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-primary-light flex items-center justify-center shrink-0">
           <TrendingUp className="w-5 h-5 text-white" />
         </div>
-        {!isCollapsed && (
-          <span className="font-bold text-xl gradient-text whitespace-nowrap">Smart Invest</span>
-        )}
+        {!isCollapsed && <span className="font-bold text-xl gradient-text whitespace-nowrap">Smart Invest</span>}
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 space-y-2 mt-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
-          
+          const isLocked = Boolean(item.locked);
+
           return (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={`
                 w-full flex items-center gap-3 p-3 rounded-xl transition-all group
-                ${isActive 
-                  ? 'bg-(--primary-muted) text-primary-light' 
-                  : 'text-(--text-secondary) hover:bg-surface-light hover:text-(--text-primary)'}
+                ${
+                  isActive
+                    ? 'bg-(--primary-muted) text-primary-light'
+                    : 'text-(--text-secondary) hover:bg-surface-light hover:text-(--text-primary)'
+                }
               `}
-              title={isCollapsed ? item.label : ''}
+              title={isCollapsed ? item.label : isLocked ? `${item.label} (bloqueado no plano)` : ''}
             >
               <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-primary-light' : 'group-hover:text-primary'}`} />
-              {!isCollapsed && (
-                <span className="font-medium whitespace-nowrap">{item.label}</span>
-              )}
-              {isActive && !isCollapsed && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-light" />
-              )}
+              {!isCollapsed && <span className="font-medium whitespace-nowrap">{item.label}</span>}
+              {isLocked && !isCollapsed && <Lock className="w-3.5 h-3.5 text-(--text-muted)" />}
+              {isActive && !isCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-light" />}
             </button>
           );
         })}
       </nav>
 
-      {/* Footer / Settings */}
       <div className="p-3 border-t border-surface-light">
         <button
           className="w-full flex items-center gap-3 p-3 rounded-xl text-(--text-secondary) hover:bg-surface-light hover:text-(--text-primary) transition-all"
           onClick={() => onTabChange('settings')}
         >
           <Settings className="w-5 h-5 shrink-0" />
-          {!isCollapsed && <span className="font-medium">Configurações</span>}
+          {!isCollapsed && <span className="font-medium">Configuracoes</span>}
         </button>
-        
-        <button 
+
+        <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="mt-2 w-full flex items-center justify-center p-2 rounded-lg bg-surface-light text-(--text-muted) hover:text-(--text-primary) transition-all"
         >

@@ -335,15 +335,26 @@ class IntentParser:
     ) -> RiskTolerance:
         """Detecta tolerância ao risco."""
         scores = {risk: 0 for risk in RiskTolerance}
+        risk_priority = {
+            RiskTolerance.CONSERVATIVE: 0,
+            RiskTolerance.MODERATE: 1,
+            RiskTolerance.AGGRESSIVE: 2,
+            RiskTolerance.SPECULATIVE: 3,
+        }
         
         for risk, keywords in self.RISK_KEYWORDS.items():
             for keyword in keywords:
                 if keyword in prompt:
-                    scores[risk] += 1
+                    # Expressões longas e específicas têm peso maior.
+                    token_count = len(keyword.split())
+                    scores[risk] += token_count
         
         # Se detectado explicitamente, usar
         if max(scores.values()) > 0:
-            return max(scores, key=scores.get)
+            return max(
+                scores,
+                key=lambda risk: (scores[risk], risk_priority[risk])
+            )
         
         # Senão, inferir do objetivo
         risk_by_objective = {
