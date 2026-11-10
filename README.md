@@ -174,9 +174,16 @@ Classificação baseada em 5 variáveis:
 | Deploy | R$ 0 |
 | **Total** | **R$ 0** |
 
-## Documentação
+## Documentação técnica
 
-A visão geral de arquitetura, configuração e execução está descrita neste README. Os cinco documentos de planejamento anteriormente listados em `docs/planejamento/` **não foram encontrados nos caminhos informados** e foram removidos da lista de links para evitar referências quebradas. Sua recriação depende de uma revisão efetiva do código e das decisões de implementação.
+A documentação de planejamento está em [docs/planejamento](docs/planejamento/README.md):
+
+- [Visão do produto](docs/planejamento/01-visao-produto.md)
+- [Arquitetura de dados](docs/planejamento/02-arquitetura-dados.md)
+- [Segurança e operação](docs/planejamento/03-seguranca-operacao.md)
+- [Pendências da versão inicial](docs/planejamento/04-todo-v1.md)
+
+A existência dos documentos não substitui a execução de testes, a verificação das integrações nem a validação dos dados.
 
 ## Segurança, limitações e responsabilidade
 
