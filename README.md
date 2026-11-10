@@ -176,11 +176,7 @@ Classificação baseada em 5 variáveis:
 
 ## Documentação
 
-- [Modelagem de Negócio](docs/planejamento/01-modelagem-negocio.md)
-- [Modelagem de Dados](docs/planejamento/02-modelagem-dados.md)
-- [Stack e Arquitetura](docs/planejamento/03-stack-arquitetura.md)
-- [Processo de Desenvolvimento](docs/planejamento/04-processo-desenvolvimento.md)
-- [Deploy e Operações](docs/planejamento/05-deploy-operacoes.md)
+A visão geral de arquitetura, configuração e execução está descrita neste README. Os cinco documentos de planejamento anteriormente listados em `docs/planejamento/` **não foram encontrados nos caminhos informados** e foram removidos da lista de links para evitar referências quebradas. Sua recriação depende de uma revisão efetiva do código e das decisões de implementação.
 
 ## Segurança, limitações e responsabilidade
 
