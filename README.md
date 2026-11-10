@@ -1,6 +1,6 @@
 # Smart Invest - Sistema de Inteligência de Investimentos
 
-Sistema quantitativo determinístico para investimentos no Brasil (B3).
+Projeto pessoal de engenharia de software e processamento quantitativo de dados do mercado brasileiro (B3). O README descreve o desenho e as rotinas previstas; resultados de execução, cobertura de testes e confiabilidade dos dados devem ser avaliados separadamente.
 
 ## Visão Geral
 
@@ -182,6 +182,14 @@ Classificação baseada em 5 variáveis:
 - [Processo de Desenvolvimento](docs/planejamento/04-processo-desenvolvimento.md)
 - [Deploy e Operações](docs/planejamento/05-deploy-operacoes.md)
 
+## Segurança, limitações e responsabilidade
+
+- Utilize tokens de provedores apenas por variáveis de ambiente locais ou armazenamento seguro de segredos; não publique arquivos `.env` preenchidos.
+- Dados e cotações podem estar sujeitos a limites, atrasos e indisponibilidade dos provedores; os valores exibidos aqui não foram validados nesta revisão.
+- Estratégias e classificações quantitativas não garantem retornos e não são recomendações personalizadas de investimento.
+- Evite versionar bancos de dados locais, backups, logs ou chaves de API. Teste com dados sintéticos sempre que possível.
+- Esta revisão foi documental; **não** foi executado teste funcional ou de segurança da aplicação.
+
 ## Licença
 
-Privado - Uso pessoal
+Uso pessoal, conforme descrição do projeto. Reutilização por terceiros depende de esclarecimento da licença.
